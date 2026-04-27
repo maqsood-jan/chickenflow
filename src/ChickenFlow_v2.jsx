@@ -1,4 +1,24 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ─── FIREBASE CONFIG ─ Replace with your own from Firebase Console ──────────
+const firebaseConfig = {
+  apiKey: "AIzaSyDcoWautL9x8jhmrOvZc8n6CYL_csWskU0",
+  authDomain: "chickenflow-a3cf2.firebaseapp.com",
+  projectId: "chickenflow-a3cf2",
+  storageBucket: "chickenflow-a3cf2.firebasestorage.app",
+  messagingSenderId: "264036211412",
+  appId: "1:264036211412:web:13436225e08ef36a42b941"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
 
 // ─── UTILS ───────────────────────────────────────────────────────────────────
 const genId   = () => Math.random().toString(36).slice(2,8).toUpperCase();
@@ -115,56 +135,12 @@ function calcCurrentMonthEarned(labourer) {
   return Math.round((rate / 30) * Math.min(days, 30));
 }
 
-// ─── PERSISTED STATE ──────────────────────────────────────────────────────────
-function useLocalState(key, defaultValue) {
-  const [state, setState] = useState(() => {
-    try {
-      const saved = localStorage.getItem(key);
-      return saved ? JSON.parse(saved) : defaultValue;
-    } catch { return defaultValue; }
-  });
-  const setPersisted = (value) => {
-    setState(prev => {
-      const next = typeof value === "function" ? value(prev) : value;
-      try { localStorage.setItem(key, JSON.stringify(next)); } catch(e) {
-        console.warn("localStorage write failed:", e);
-      }
-      return next;
-    });
-  };
-  return [state, setPersisted];
-}
+// ─── PERSISTED STATE (replaced by Firebase)
 
 // ─── DATA BACKUP / RESTORE ────────────────────────────────────────────────────
-const STORAGE_KEYS = {
-  vehicles:    "cf_vehicles",
-  customers:   "cf_customers",
-  suppliers:   "cf_suppliers",
-  accounts:    "cf_accounts",
-  transactions:"cf_transactions",
-  labourers:   "cf_labourers",
-  categories:  "cf_categories",
-};
 
-function exportAllData() {
-  const snapshot = {};
-  Object.entries(STORAGE_KEYS).forEach(([k, storageKey]) => {
-    try {
-      const val = localStorage.getItem(storageKey);
-      snapshot[k] = val ? JSON.parse(val) : null;
-    } catch { snapshot[k] = null; }
-  });
-  snapshot._exportedAt = new Date().toISOString();
-  snapshot._version = "1.0";
-  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  const dateStr = new Date().toISOString().slice(0,10);
-  a.href     = url;
-  a.download = `ChickenFlow_Backup_${dateStr}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
+
+
 
 function importDataFromFile(file, callbacks) {
   const reader = new FileReader();
@@ -357,7 +333,7 @@ function useAutoBackup(intervalMinutes) {
     const intervalMs = intervalMinutes * 60 * 1000;
 
     const doBackup = () => {
-      exportAllData();
+      onExport && onExport();
       const now = new Date();
       lastBackupRef.current = now;
       setLastBackupTime(now);
@@ -385,7 +361,7 @@ function useAutoBackup(intervalMinutes) {
 }
 
 // ─── BACKUP PANEL ─────────────────────────────────────────────────────────────
-function BackupPanel({ autoBackupMinutes, setAutoBackupMinutes, importCallbacks }) {
+function BackupPanel({ autoBackupMinutes, setAutoBackupMinutes, importCallbacks, onExport }) {
   const [modal, setModal] = useState(false);
   const [pendingMin, setPendingMin] = useState(autoBackupMinutes);
   const importRef = useRef();
@@ -422,7 +398,7 @@ function BackupPanel({ autoBackupMinutes, setAutoBackupMinutes, importCallbacks 
           <div style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: 16, marginBottom: 14 }}>
             <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 14 }}>📤 Export Backup</div>
             <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>Download all your data as a JSON file.</div>
-            <Btn color="amber" onClick={() => { exportAllData(); setModal(false); }}>⬇ Download Backup Now</Btn>
+            <Btn color="amber" onClick={() => { onExport && onExport(); setModal(false); }}>⬇ Download Backup Now</Btn>
           </div>
           <div style={{ background: C.card2, border: `1px solid ${C.border}`, borderRadius: 10, padding: 16, marginBottom: 14 }}>
             <div style={{ fontWeight: 700, marginBottom: 6, fontSize: 14 }}>⏱ Auto-Backup to File</div>
@@ -2887,26 +2863,158 @@ function NewVehicleModal({suppliers,onClose,onCreate}){
 }
 
 // ─── APP ROOT ─────────────────────────────────────────────────────────────────
-export default function App(){
-  const [vehicles,   setVehicles]   = useLocalState("cf_vehicles", []);
-  const [customers,  setCustomers]  = useLocalState("cf_customers", []);
-  const [suppliers,  setSuppliers]  = useLocalState("cf_suppliers", []);
-  const [accounts,   setAccounts]   = useLocalState("cf_accounts", [{id:"cash",name:"Cash on Hand",type:"cash",createdAt:today()}]);
-  const [transactions,setTransactions] = useLocalState("cf_transactions", []);
-  const [labourers,  setLabourers]  = useLocalState("cf_labourers", []);
-  const [expenseCategories,setExpenseCategories] = useLocalState("cf_categories", ["Transit","Office","Driver","Loading","Home Expense","Personal","Fuel","Utility","Other"]);
+
+// ─── FIREBASE PERSISTED STATE ────────────────────────────────────────────────
+function useFirestoreState(uid, key, defaultValue) {
+  const [state, setState] = useState(defaultValue);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!uid) return;
+    const ref = doc(db, "users", uid, "data", key);
+    const unsub = onSnapshot(ref, (snap) => {
+      if (snap.exists()) {
+        setState(snap.data().value ?? defaultValue);
+      } else {
+        setState(defaultValue);
+      }
+      setLoaded(true);
+    });
+    return () => unsub();
+  }, [uid, key]);
+
+  const setPersisted = useCallback((value) => {
+    setState(prev => {
+      const next = typeof value === "function" ? value(prev) : value;
+      if (uid) {
+        const ref = doc(db, "users", uid, "data", key);
+        setDoc(ref, { value: next }, { merge: true }).catch(console.error);
+      }
+      return next;
+    });
+  }, [uid, key]);
+
+  return [state, setPersisted, loaded];
+}
+
+// ─── LOGIN SCREEN ─────────────────────────────────────────────────────────────
+function LoginScreen({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isRegister, setIsRegister] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handle = async (e) => {
+    e.preventDefault();
+    setError(""); setLoading(true);
+    try {
+      if (isRegister) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+    } catch (err) {
+      setError(err.message.replace("Firebase: ", "").replace(/\(auth.*\)/, ""));
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:36,width:"100%",maxWidth:380}}>
+        <div style={{textAlign:"center",marginBottom:28}}>
+          <div style={{fontSize:36,marginBottom:8}}>🐔</div>
+          <div style={{fontSize:22,fontWeight:800,color:C.amber,letterSpacing:"-0.02em"}}>ChickenFlow</div>
+          <div style={{fontSize:12,color:C.muted,marginTop:4}}>{isRegister ? "Create your account" : "Sign in to your account"}</div>
+        </div>
+        <form onSubmit={handle}>
+          <div style={{marginBottom:14}}>
+            <label style={{display:"block",fontSize:12,color:C.muted,marginBottom:5,fontWeight:600}}>Email</label>
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
+              placeholder="you@example.com" required autoComplete="email"/>
+          </div>
+          <div style={{marginBottom:20}}>
+            <label style={{display:"block",fontSize:12,color:C.muted,marginBottom:5,fontWeight:600}}>Password</label>
+            <input type="password" value={password} onChange={e=>setPassword(e.target.value)}
+              placeholder="••••••••" required minLength={6} autoComplete={isRegister?"new-password":"current-password"}/>
+          </div>
+          {error && <div style={{background:C.redSoft,border:`1px solid ${C.red}33`,borderRadius:8,padding:"8px 12px",
+            fontSize:12,color:C.red,marginBottom:14}}>{error}</div>}
+          <button type="submit" disabled={loading}
+            style={{width:"100%",background:C.amber,color:"#000",fontWeight:700,fontSize:14,
+              padding:"10px 0",borderRadius:8,border:"none",cursor:loading?"not-allowed":"pointer",
+              opacity:loading?0.7:1}}>
+            {loading ? "Please wait..." : isRegister ? "Create Account" : "Sign In"}
+          </button>
+        </form>
+        <div style={{textAlign:"center",marginTop:18,fontSize:12,color:C.muted}}>
+          {isRegister ? "Already have an account? " : "Don't have an account? "}
+          <span onClick={()=>{setIsRegister(!isRegister);setError("");}}
+            style={{color:C.amber,cursor:"pointer",fontWeight:600}}>
+            {isRegister ? "Sign In" : "Register"}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── LOADING SCREEN ───────────────────────────────────────────────────────────
+function LoadingScreen() {
+  return (
+    <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{textAlign:"center"}}>
+        <div style={{fontSize:40,marginBottom:12}}>🐔</div>
+        <div style={{color:C.muted,fontSize:14}}>Loading ChickenFlow...</div>
+      </div>
+    </div>
+  );
+}
+
+function exportAllData(data) {
+  const snapshot = { ...data, _exportedAt: new Date().toISOString(), _version: "1.0" };
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const dateStr = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `ChickenFlow_Backup_${dateStr}.json`; a.click();
+  URL.revokeObjectURL(url);
+}
+export default function AppRoot() {
+  const [user, setUser] = useState(undefined); // undefined=loading, null=logged out
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, u => setUser(u));
+    return () => unsub();
+  }, []);
+
+  if (user === undefined) return <><style>{css}</style><LoadingScreen /></>;
+  if (!user) return <><style>{css}</style><LoginScreen /></>;
+  return <App uid={user.uid} userEmail={user.email} />;
+}
+
+function App({ uid, userEmail }) {
+  const [vehicles,    setVehicles,    v_loaded]  = useFirestoreState(uid, "cf_vehicles",    []);
+  const [customers,   setCustomers,   c_loaded]  = useFirestoreState(uid, "cf_customers",   []);
+  const [suppliers,   setSuppliers,   s_loaded]  = useFirestoreState(uid, "cf_suppliers",   []);
+  const [accounts,    setAccounts,    a_loaded]  = useFirestoreState(uid, "cf_accounts",    [{id:"cash",name:"Cash on Hand",type:"cash",createdAt:today()}]);
+  const [transactions,setTransactions,t_loaded]  = useFirestoreState(uid, "cf_transactions",[]);
+  const [labourers,   setLabourers,   l_loaded]  = useFirestoreState(uid, "cf_labourers",   []);
+  const [expenseCategories,setExpenseCategories,ec_loaded] = useFirestoreState(uid, "cf_categories", ["Transit","Office","Driver","Loading","Home Expense","Personal","Fuel","Utility","Other"]);
+
+  const allLoaded = v_loaded && c_loaded && s_loaded && a_loaded && t_loaded && l_loaded && ec_loaded;
 
   const [page,    setPage]    = useState("projects");
   const [openId,  setOpenId]  = useState(null);
   const [showNew, setShowNew] = useState(false);
   const [autoBackupMinutes, setAutoBackupMinutes] = useState(0);
-  const [abWarned, setAbWarned] = useState(false);
 
   const addTxn = txn => setTransactions(p => [...p, {id:genId(), ...txn}]);
   const openVehicle = vehicles.find(v => v.id === openId);
   const totalBal = accounts.reduce((s,a) => s + getBalance(a.id, transactions), 0);
   const totalPending = vehicles.reduce((s,v) => s + calcVehicle(v,transactions).totalSaleBalance, 0);
 
+  const exportData = () => exportAllData({ vehicles, customers, suppliers, accounts, transactions, labourers, categories: expenseCategories });
   const importCallbacks = { setVehicles, setCustomers, setSuppliers, setAccounts, setTransactions, setLabourers, setExpenseCategories };
 
   const navItems=[
@@ -2918,6 +3026,8 @@ export default function App(){
     {id:"batch_receipt",  label:"📥 Batch Receipt"},
     {id:"reports",        label:"📋 Reports"},
   ];
+
+  if (!allLoaded) return <LoadingScreen />;
 
   return(
     <>
@@ -2938,7 +3048,17 @@ export default function App(){
           <div style={{color:totalBal>=0?C.green:C.red,fontWeight:700}} className="mono">{fmtRs(totalBal)}</div>
           {totalPending>0&&<div style={{color:C.red}} className="mono">Pending: {fmtRs(totalPending)}</div>}
         </div>
-        <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes} importCallbacks={importCallbacks}/>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes}
+            importCallbacks={importCallbacks} onExport={exportData}/>
+          <div style={{fontSize:11,color:C.muted,maxWidth:120,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}
+            title={userEmail}>{userEmail}</div>
+          <button onClick={()=>signOut(auth)}
+            style={{background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,
+              padding:"5px 10px",borderRadius:8,fontSize:11,fontWeight:600,whiteSpace:"nowrap"}}>
+            Sign Out
+          </button>
+        </div>
       </div>
 
       <div style={{padding:"22px 20px",maxWidth:1200,margin:"0 auto"}}>
