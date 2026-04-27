@@ -179,22 +179,56 @@ const C={
 const css=`
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:${C.bg};color:${C.text};font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;}
-  input,select,textarea{background:${C.card2};border:1.5px solid ${C.border};color:${C.text};padding:8px 11px;border-radius:8px;font-family:inherit;font-size:13px;width:100%;outline:none;transition:border-color 0.15s;}
+  html,body{height:100%;overscroll-behavior:none;}
+  body{background:${C.bg};color:${C.text};font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;}
+  input,select,textarea{background:${C.card2};border:1.5px solid ${C.border};color:${C.text};padding:10px 12px;border-radius:10px;font-family:inherit;font-size:16px;width:100%;outline:none;transition:border-color 0.15s;-webkit-appearance:none;appearance:none;}
   input:focus,select:focus,textarea:focus{border-color:${C.amber};}
   input::placeholder,textarea::placeholder{color:${C.muted};}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234E5E7A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
   select option{background:${C.card2};}
-  button{cursor:pointer;font-family:inherit;border:none;border-radius:8px;font-size:13px;font-weight:600;padding:8px 16px;transition:all 0.15s;}
+  button{cursor:pointer;font-family:inherit;border:none;border-radius:10px;font-size:14px;font-weight:600;padding:10px 18px;transition:all 0.15s;min-height:44px;-webkit-tap-highlight-color:transparent;}
+  button:active{opacity:0.75;transform:scale(0.97);}
   .mono{font-family:'JetBrains Mono',monospace;}
   ::-webkit-scrollbar{width:4px;height:4px;}
   ::-webkit-scrollbar-track{background:${C.bg};}
   ::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px;}
   tr:hover>td{background:${C.card2}66;}
-  .ci{padding:5px 8px !important;font-size:12px !important;border-radius:6px !important;}
+  .ci{padding:6px 10px !important;font-size:12px !important;border-radius:8px !important;}
+  .page-content{padding:16px;padding-bottom:calc(80px + env(safe-area-inset-bottom));max-width:1200px;margin:0 auto;}
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:${C.card};border-top:1px solid ${C.border};display:flex;align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom);height:calc(62px + env(safe-area-inset-bottom));}
+  .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all 0.15s;min-height:44px;-webkit-tap-highlight-color:transparent;}
+  .bottom-nav-item:active{background:${C.card2};}
+  .bottom-nav-icon{font-size:20px;line-height:1;}
+  .bottom-nav-label{font-size:10px;font-weight:600;letter-spacing:0.02em;}
+  .top-header{background:${C.card};border-bottom:1px solid ${C.border};padding:0 16px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:99;gap:8px;padding-top:env(safe-area-inset-top);}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+  .form-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .form-row>*{flex:1;min-width:140px;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid ${C.border};}
+  .table-wrap table{min-width:500px;}
+  .mobile-card{background:${C.card};border:1px solid ${C.border};border-radius:14px;padding:16px;margin-bottom:12px;}
+  .overflow-menu{position:relative;}
+  @media(max-width:600px){
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .card-grid{grid-template-columns:1fr;}
+    .hide-mobile{display:none !important;}
+    .full-mobile{width:100% !important;}
+    .form-row>*{min-width:100%;flex:0 0 100%;}
+    h1{font-size:18px !important;}
+    h2{font-size:16px !important;}
+  }
+  @media(min-width:768px){
+    .bottom-nav{display:none;}
+    .page-content{padding-bottom:24px;}
+    .top-nav-desktop{display:flex !important;}
+  }
+  .top-nav-desktop{display:none;}
   @media print{
     .no-print{display:none !important;}
     body{background:#fff;color:#000;}
     .print-card{background:#fff;border:1px solid #ddd;color:#000;}
+    .bottom-nav{display:none !important;}
   }
 `;
 
@@ -213,7 +247,8 @@ const Btn=({children,color="amber",onClick,full,small,sx={}})=>{
   const m=M[color]||M.amber;
   return(
     <button onClick={onClick} style={{background:m.bg,color:m.fg,border:m.bdr||"none",
-      width:full?"100%":undefined,padding:small?"5px 10px":"8px 16px",fontSize:small?11:13,...sx}}
+      width:full?"100%":undefined,padding:small?"6px 12px":"10px 18px",fontSize:small?12:14,
+      minHeight:small?36:44,...sx}}
       onMouseEnter={e=>e.currentTarget.style.background=m.hov}
       onMouseLeave={e=>e.currentTarget.style.background=m.bg}>
       {children}
@@ -249,14 +284,14 @@ const TD=({children,color,bold,mono,right,small})=>(
     textAlign:right?"right":"left"}}>{children}</td>
 );
 const StatBox=({label,value,color,sub})=>(
-  <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:10,padding:"12px 15px"}}>
-    <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:4}}>{label}</div>
-    <div className="mono" style={{fontSize:17,fontWeight:700,color:color||C.text}}>{value}</div>
-    {sub&&<div style={{fontSize:11,color:C.muted,marginTop:2}}>{sub}</div>}
+  <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:12,padding:"12px 10px"}}>
+    <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{label}</div>
+    <div className="mono" style={{fontSize:15,fontWeight:700,color:color||C.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{value}</div>
+    {sub&&<div style={{fontSize:10,color:C.muted,marginTop:2}}>{sub}</div>}
   </div>
 );
 const InfoCard=({title,children,action})=>(
-  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:20,height:"fit-content"}}>
+  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:16,height:"fit-content"}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
       <Label>{title}</Label>{action}
     </div>{children}
@@ -270,19 +305,25 @@ const Empty=({icon,text})=>(
 );
 const Modal=({title,onSave,saveLabel="Save",onClose,children,width=500,noFooter})=>(
   <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",display:"flex",
-    alignItems:"center",justifyContent:"center",zIndex:999,padding:16}}>
-    <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,
-      width:"100%",maxWidth:width,maxHeight:"94vh",display:"flex",flexDirection:"column"}}>
-      <div style={{padding:"15px 22px",borderBottom:`1px solid ${C.border}`,
+    alignItems:"flex-end",justifyContent:"center",zIndex:999}}
+    onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+    <div style={{background:C.card,border:`1px solid ${C.border}`,
+      borderRadius:"16px 16px 0 0",width:"100%",maxWidth:width,
+      maxHeight:"92vh",display:"flex",flexDirection:"column",
+      paddingBottom:"env(safe-area-inset-bottom)"}}>
+      <div style={{width:36,height:4,background:C.border,borderRadius:2,margin:"10px auto 0"}}/>
+      <div style={{padding:"12px 20px 12px",borderBottom:`1px solid ${C.border}`,
         display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
         <div style={{fontSize:16,fontWeight:700}}>{title}</div>
-        <button onClick={onClose} style={{background:"transparent",color:C.muted,fontSize:18,padding:"2px 8px"}}>✕</button>
+        <button onClick={onClose} style={{background:C.card2,color:C.muted,fontSize:16,
+          width:32,height:32,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+          border:`1px solid ${C.border}`,minHeight:32,padding:0}}>✕</button>
       </div>
-      <div style={{padding:"18px 22px",overflowY:"auto",flex:1}}>{children}</div>
+      <div style={{padding:"16px 20px",overflowY:"auto",flex:1,WebkitOverflowScrolling:"touch"}}>{children}</div>
       {!noFooter&&(
-        <div style={{padding:"13px 22px",borderTop:`1px solid ${C.border}`,display:"flex",gap:8,justifyContent:"flex-end",flexShrink:0}}>
-          <Btn color="ghost" onClick={onClose}>Cancel</Btn>
-          {onSave&&<Btn color="amber" onClick={onSave}>{saveLabel}</Btn>}
+        <div style={{padding:"12px 20px",borderTop:`1px solid ${C.border}`,display:"flex",gap:8,flexShrink:0}}>
+          <Btn color="ghost" onClick={onClose} full>Cancel</Btn>
+          {onSave&&<Btn color="amber" onClick={onSave} full>{saveLabel}</Btn>}
         </div>
       )}
     </div>
@@ -2124,21 +2165,23 @@ function Dashboard({vehicles,transactions,onOpen,onNew}){
   const totalRev=vehicles.reduce((s,v)=>s+calcVehicle(v,transactions).totalSaleValue,0);
   return(
     <div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:22}}>
-        <div><h1 style={{fontSize:22,fontWeight:800,marginBottom:4}}>🚛 Vehicle Projects</h1>
-          <p style={{color:C.muted,fontSize:13}}>{active.length} active · {vehicles.length} total</p></div>
-        <Btn onClick={onNew} sx={{fontSize:14,padding:"10px 20px"}}>+ New Vehicle</Btn>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <div>
+          <h1 style={{fontSize:20,fontWeight:800,marginBottom:2}}>Vehicle Projects</h1>
+          <p style={{color:C.muted,fontSize:13}}>{active.length} active · {vehicles.length} total</p>
+        </div>
+        <Btn onClick={onNew} sx={{fontSize:13,padding:"10px 16px",minHeight:44}}>+ New</Btn>
       </div>
-      <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap",alignItems:"center"}}>
-        <input value={projSearch} onChange={e=>setProjSearch(e.target.value)} placeholder="🔍 Search vehicle / driver…" style={{maxWidth:240,padding:"7px 12px",borderRadius:8,border:`1px solid ${C.border}`,background:C.card2,color:C.text,fontSize:13}}/>
+      <div style={{display:"flex",gap:8,marginBottom:14,flexWrap:"wrap",alignItems:"center"}}>
+        <input value={projSearch} onChange={e=>setProjSearch(e.target.value)} placeholder="🔍 Search vehicle / driver…" style={{flex:1,minWidth:0,padding:"9px 12px",borderRadius:10,border:`1px solid ${C.border}`,background:C.card2,color:C.text,fontSize:16}}/>
         {["all","active","closed"].map(s=><button key={s} onClick={()=>setProjStatus(s)} style={{padding:"6px 12px",borderRadius:8,fontSize:12,fontWeight:600,background:projStatus===s?C.amberSoft:"transparent",color:projStatus===s?C.amber:C.muted,border:projStatus===s?`1px solid ${C.amber}44`:"1px solid transparent",cursor:"pointer"}}>{s==="all"?"All Vehicles":s==="active"?"Active":"Closed"}</button>)}
         {(projSearch||projStatus!=="all")&&<button onClick={()=>{setProjSearch("");setProjStatus("all");}} style={{padding:"5px 10px",borderRadius:8,fontSize:11,background:C.card2,color:C.muted,border:`1px solid ${C.border}`,cursor:"pointer"}}>✕ Clear</button>}
       </div>
       {vehicles.length>0&&(
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:22}}>
-          <StatBox label="Active Vehicles" value={active.length} color={C.amber}/>
-          <StatBox label="Total Sale Value" value={fmtRs(totalRev)} color={C.green}/>
-          <StatBox label="Total P&L" value={fmtRs(Math.abs(totalPnl))} color={totalPnl>=0?C.green:C.red} sub={totalPnl>=0?"Profit":"Loss"}/>
+        <div className="stat-grid" style={{marginBottom:16}}>
+          <StatBox label="Active" value={active.length} color={C.amber}/>
+          <StatBox label="Sale Value" value={fmtRs(totalRev)} color={C.green}/>
+          <StatBox label="P&L" value={fmtRs(Math.abs(totalPnl))} color={totalPnl>=0?C.green:C.red} sub={totalPnl>=0?"Profit":"Loss"}/>
         </div>
       )}
       {filteredVehicles.length===0&&vehicles.length>0?<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"40px 20px",textAlign:"center",color:C.muted}}>No vehicles match your search.</div>:filteredVehicles.length===0?(
@@ -2149,12 +2192,12 @@ function Dashboard({vehicles,transactions,onOpen,onNew}){
           <Btn onClick={onNew}>+ Create First Vehicle</Btn>
         </div>
       ):(
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(310px,1fr))",gap:16}}>
+        <div className="card-grid">
           {vehicles.map(v=>{
             const c=calcVehicle(v,transactions);
             return(
               <div key={v.id} onClick={()=>onOpen(v.id)}
-                style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:20,cursor:"pointer",transition:"border-color 0.15s,transform 0.1s"}}
+                style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:16,cursor:"pointer",transition:"border-color 0.15s",WebkitTapHighlightColor:"transparent"}}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor=C.amber;e.currentTarget.style.transform="translateY(-2px)";}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor=C.border;e.currentTarget.style.transform="none";}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
@@ -2921,8 +2964,8 @@ function LoginScreen({ onLogin }) {
   };
 
   return (
-    <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-      <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:36,width:"100%",maxWidth:380}}>
+    <div style={{minHeight:"100vh",minHeight:"100dvh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:20,padding:"32px 24px",width:"100%",maxWidth:380}}>
         <div style={{textAlign:"center",marginBottom:28}}>
           <div style={{fontSize:36,marginBottom:8}}>🐔</div>
           <div style={{fontSize:22,fontWeight:800,color:C.amber,letterSpacing:"-0.02em"}}>ChickenFlow</div>
@@ -2932,19 +2975,19 @@ function LoginScreen({ onLogin }) {
           <div style={{marginBottom:14}}>
             <label style={{display:"block",fontSize:12,color:C.muted,marginBottom:5,fontWeight:600}}>Email</label>
             <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
-              placeholder="you@example.com" required autoComplete="email"/>
+              placeholder="you@example.com" required autoComplete="email" style={{fontSize:16}}/>
           </div>
           <div style={{marginBottom:20}}>
             <label style={{display:"block",fontSize:12,color:C.muted,marginBottom:5,fontWeight:600}}>Password</label>
             <input type="password" value={password} onChange={e=>setPassword(e.target.value)}
-              placeholder="••••••••" required minLength={6} autoComplete={isRegister?"new-password":"current-password"}/>
+              placeholder="••••••••" required minLength={6} autoComplete={isRegister?"new-password":"current-password"} style={{fontSize:16}}/>
           </div>
           {error && <div style={{background:C.redSoft,border:`1px solid ${C.red}33`,borderRadius:8,padding:"8px 12px",
             fontSize:12,color:C.red,marginBottom:14}}>{error}</div>}
           <button type="submit" disabled={loading}
-            style={{width:"100%",background:C.amber,color:"#000",fontWeight:700,fontSize:14,
-              padding:"10px 0",borderRadius:8,border:"none",cursor:loading?"not-allowed":"pointer",
-              opacity:loading?0.7:1}}>
+            style={{width:"100%",background:C.amber,color:"#000",fontWeight:700,fontSize:16,
+              padding:"14px 0",borderRadius:12,border:"none",cursor:loading?"not-allowed":"pointer",
+              opacity:loading?0.7:1,minHeight:52}}>
             {loading ? "Please wait..." : isRegister ? "Create Account" : "Sign In"}
           </button>
         </form>
@@ -2963,7 +3006,7 @@ function LoginScreen({ onLogin }) {
 // ─── LOADING SCREEN ───────────────────────────────────────────────────────────
 function LoadingScreen() {
   return (
-    <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{minHeight:"100vh",minHeight:"100dvh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{textAlign:"center"}}>
         <div style={{fontSize:40,marginBottom:12}}>🐔</div>
         <div style={{color:C.muted,fontSize:14}}>Loading ChickenFlow...</div>
@@ -3029,39 +3072,104 @@ function App({ uid, userEmail }) {
 
   if (!allLoaded) return <LoadingScreen />;
 
+  const pageTitles = {
+    projects: "🚛 Projects", customers: "👤 Customers", suppliers: "🏭 Suppliers",
+    accounts: "💰 Accounts", salaries: "👷 Salaries", batch_receipt: "📥 Batch Receipt",
+    reports: "📋 Reports", more: "⚙️ More"
+  };
+
+  // Bottom nav: show 5 most used + More
+  const bottomNav = [
+    {id:"projects", icon:"🚛", label:"Projects"},
+    {id:"customers", icon:"👤", label:"Customers"},
+    {id:"accounts", icon:"💰", label:"Accounts"},
+    {id:"salaries", icon:"👷", label:"Salaries"},
+    {id:"more", icon:"☰", label:"More"},
+  ];
+
+  const [showMore, setShowMore] = useState(false);
+
+  const navigate = (id) => {
+    setPage(id); setOpenId(null); setShowMore(false);
+  };
+
   return(
     <>
       <style>{css}</style>
-      <div style={{background:C.card,borderBottom:`1px solid ${C.border}`,padding:"0 16px",
-        display:"flex",alignItems:"center",height:56,position:"sticky",top:0,zIndex:100,gap:2}} className="no-print">
-        <div style={{fontSize:16,fontWeight:800,color:C.amber,marginRight:12,letterSpacing:"-0.02em",whiteSpace:"nowrap"}}>🐔 ChickenFlow</div>
-        {navItems.map(item=>(
-          <button key={item.id} onClick={()=>{setPage(item.id);setOpenId(null);}}
-            style={{background:page===item.id?C.amberSoft:"transparent",color:page===item.id?C.amber:C.muted,
-              border:page===item.id?`1px solid ${C.amber}44`:"1px solid transparent",
-              padding:"5px 11px",borderRadius:8,fontWeight:600,fontSize:12,whiteSpace:"nowrap"}}>
-            {item.label}
-          </button>
-        ))}
-        <div style={{flex:1}}/>
-        <div style={{fontSize:11,color:C.muted,textAlign:"right",lineHeight:1.6,marginRight:12}}>
-          <div style={{color:totalBal>=0?C.green:C.red,fontWeight:700}} className="mono">{fmtRs(totalBal)}</div>
-          {totalPending>0&&<div style={{color:C.red}} className="mono">Pending: {fmtRs(totalPending)}</div>}
+
+      {/* ── TOP HEADER ── */}
+      <div className="top-header no-print">
+        {openVehicle ? (
+          <button onClick={()=>setOpenId(null)}
+            style={{background:"transparent",color:C.amber,fontSize:22,padding:"4px 8px 4px 0",minHeight:44,marginRight:4}}>‹</button>
+        ) : null}
+        <div style={{fontSize:17,fontWeight:800,color:C.amber,letterSpacing:"-0.02em",flex:1}}>
+          {openVehicle ? `🚛 ${openVehicle.vehicleNo}` : pageTitles[page] || "ChickenFlow"}
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:8}}>
+        {/* Balance shown in header */}
+        <div style={{fontSize:12,color:totalBal>=0?C.green:C.red,fontWeight:700,marginRight:8}} className="mono">
+          {fmtRs(totalBal)}
+        </div>
+        {/* Desktop nav */}
+        <div className="top-nav-desktop" style={{gap:4,alignItems:"center"}}>
+          {navItems.map(item=>(
+            <button key={item.id} onClick={()=>navigate(item.id)}
+              style={{background:page===item.id?C.amberSoft:"transparent",color:page===item.id?C.amber:C.muted,
+                border:page===item.id?`1px solid ${C.amber}44`:"1px solid transparent",
+                padding:"5px 10px",borderRadius:8,fontWeight:600,fontSize:12,whiteSpace:"nowrap",minHeight:36}}>
+              {item.label}
+            </button>
+          ))}
           <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes}
             importCallbacks={importCallbacks} onExport={exportData}/>
-          <div style={{fontSize:11,color:C.muted,maxWidth:120,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}
-            title={userEmail}>{userEmail}</div>
           <button onClick={()=>signOut(auth)}
             style={{background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,
-              padding:"5px 10px",borderRadius:8,fontSize:11,fontWeight:600,whiteSpace:"nowrap"}}>
+              padding:"5px 10px",borderRadius:8,fontSize:11,fontWeight:600,minHeight:36}}>
             Sign Out
           </button>
         </div>
       </div>
 
-      <div style={{padding:"22px 20px",maxWidth:1200,margin:"0 auto"}}>
+      {/* ── MORE DRAWER (mobile) ── */}
+      {showMore && (
+        <div style={{position:"fixed",inset:0,zIndex:200}} onClick={()=>setShowMore(false)}>
+          <div style={{position:"absolute",bottom:"calc(62px + env(safe-area-inset-bottom))",left:0,right:0,
+            background:C.card,borderTop:`1px solid ${C.border}`,borderRadius:"16px 16px 0 0",padding:16}}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{width:36,height:4,background:C.border,borderRadius:2,margin:"0 auto 16px"}}/>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+              {[
+                {id:"suppliers",icon:"🏭",label:"Suppliers"},
+                {id:"batch_receipt",icon:"📥",label:"Batch Receipt"},
+                {id:"reports",icon:"📋",label:"Reports"},
+              ].map(item=>(
+                <button key={item.id} onClick={()=>navigate(item.id)}
+                  style={{background:page===item.id?C.amberSoft:C.card2,
+                    color:page===item.id?C.amber:C.text,border:`1px solid ${page===item.id?C.amber+"44":C.border}`,
+                    borderRadius:12,padding:"14px 12px",fontSize:14,fontWeight:600,
+                    display:"flex",alignItems:"center",gap:8,minHeight:52}}>
+                  <span style={{fontSize:20}}>{item.icon}</span>{item.label}
+                </button>
+              ))}
+            </div>
+            <div style={{borderTop:`1px solid ${C.border}`,paddingTop:12,display:"flex",flexDirection:"column",gap:8}}>
+              <div style={{fontSize:12,color:C.muted,marginBottom:4}}>{userEmail}</div>
+              <div style={{display:"flex",gap:8}}>
+                <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes}
+                  importCallbacks={importCallbacks} onExport={exportData}/>
+                <button onClick={()=>signOut(auth)}
+                  style={{flex:1,background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,
+                    padding:"10px",borderRadius:10,fontSize:13,fontWeight:600}}>
+                  🚪 Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── PAGE CONTENT ── */}
+      <div className="page-content">
         {page==="projects"&&!openVehicle&&<Dashboard vehicles={vehicles} transactions={transactions} onOpen={id=>setOpenId(id)} onNew={()=>setShowNew(true)}/>}
         {page==="projects"&&openVehicle&&(
           <VehicleDetail vehicle={openVehicle} setVehicles={setVehicles}
@@ -3081,7 +3189,39 @@ function App({ uid, userEmail }) {
         {page==="batch_receipt"&&<BatchReceiptPage vehicles={vehicles} setVehicles={setVehicles}
           customers={customers} accounts={accounts} labourers={labourers} addTxn={addTxn}/>}
         {page==="reports"&&<ReportsPage vehicles={vehicles} customers={customers} suppliers={suppliers} transactions={transactions}/>}
+        {page==="more"&&(
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {[
+              {id:"suppliers",icon:"🏭",label:"Suppliers",desc:"Manage your suppliers"},
+              {id:"batch_receipt",icon:"📥",label:"Batch Receipt",desc:"Record multiple receipts"},
+              {id:"reports",icon:"📋",label:"Reports",desc:"View business reports"},
+            ].map(item=>(
+              <button key={item.id} onClick={()=>navigate(item.id)}
+                style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,
+                  padding:"16px",display:"flex",alignItems:"center",gap:14,textAlign:"left",width:"100%",minHeight:64}}>
+                <span style={{fontSize:28}}>{item.icon}</span>
+                <div>
+                  <div style={{fontSize:15,fontWeight:700,color:C.text}}>{item.label}</div>
+                  <div style={{fontSize:12,color:C.muted}}>{item.desc}</div>
+                </div>
+                <span style={{marginLeft:"auto",color:C.muted,fontSize:18}}>›</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* ── BOTTOM NAV (mobile only) ── */}
+      <nav className="bottom-nav no-print">
+        {bottomNav.map(item=>(
+          <button key={item.id} className="bottom-nav-item"
+            onClick={()=>item.id==="more"?setShowMore(s=>!s):navigate(item.id)}
+            style={{color:(page===item.id||(item.id==="more"&&showMore))?C.amber:C.muted}}>
+            <span className="bottom-nav-icon">{item.icon}</span>
+            <span className="bottom-nav-label">{item.label}</span>
+          </button>
+        ))}
+      </nav>
 
       {showNew&&<NewVehicleModal suppliers={suppliers} onClose={()=>setShowNew(false)}
         onCreate={v=>{setVehicles(p=>[v,...p]);setOpenId(v.id);setPage("projects");}}/>}
