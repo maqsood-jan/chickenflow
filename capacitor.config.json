@@ -3,10 +3,10 @@
   "appName": "ChickenFlow",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "cleartext": true
   },
   "android": {
-    "allowMixedContent": true,
-    "backgroundColor": "#080B12"
+    "allowMixedContent": true
   }
 }
