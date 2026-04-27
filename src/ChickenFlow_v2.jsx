@@ -1,7 +1,4 @@
-import { useState, useRef, useMemo, useEffect, useCallback } from "react";
-import { initializeApp, getApps } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, setDoc, onSnapshot } from "firebase/firestore";
+import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
 
 // ─── FIREBASE CONFIG ─ Replace with your own from Firebase Console ──────────
 const firebaseConfig = {
@@ -13,10 +10,52 @@ const firebaseConfig = {
   appId: "1:264036211412:web:13436225e08ef36a42b941"
 };
 
-// Initialize Firebase (modular SDK bundled by Vite)
-const _fbApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(_fbApp);
-const db = getFirestore(_fbApp);
+// Firebase loaded lazily to prevent startup crash
+let auth = null;
+let db = null;
+let _fbLoaded = false;
+
+async function loadFirebase() {
+  if (_fbLoaded) return true;
+  try {
+    const [{ initializeApp, getApps }, { getAuth }, { getFirestore }] = await Promise.all([
+      import("firebase/app"),
+      import("firebase/auth"),
+      import("firebase/firestore"),
+    ]);
+    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    auth = getAuth(app);
+    db = getFirestore(app);
+    _fbLoaded = true;
+    return true;
+  } catch(e) {
+    console.error("Firebase load failed:", e);
+    return false;
+  }
+}
+
+async function fbSignIn(email, password) {
+  const { signInWithEmailAndPassword } = await import("firebase/auth");
+  return signInWithEmailAndPassword(auth, email, password);
+}
+async function fbRegister(email, password) {
+  const { createUserWithEmailAndPassword } = await import("firebase/auth");
+  return createUserWithEmailAndPassword(auth, email, password);
+}
+async function fbSignOut() {
+  const { signOut } = await import("firebase/auth");
+  return signOut(auth);
+}
+async function fbOnSnapshot(uid, key, callback) {
+  const { doc, onSnapshot } = await import("firebase/firestore");
+  const ref = doc(db, "users", uid, "data", key);
+  return onSnapshot(ref, callback, (err) => { console.error("snapshot err:", err); callback(null); });
+}
+async function fbSetDoc(uid, key, value) {
+  const { doc, setDoc } = await import("firebase/firestore");
+  const ref = doc(db, "users", uid, "data", key);
+  return setDoc(ref, { value }, { merge: true });
+}
 
 
 // ─── UTILS ───────────────────────────────────────────────────────────────────
@@ -2908,44 +2947,52 @@ function NewVehicleModal({suppliers,onClose,onCreate}){
 
 // ─── FIREBASE PERSISTED STATE ────────────────────────────────────────────────
 function useFirestoreState(uid, key, defaultValue) {
-  const [state, setState] = useState(defaultValue);
-  const [loaded, setLoaded] = useState(false);
+  // Load immediately from localStorage so app shows instantly
+  const lsKey = `cf_${uid}_${key}`;
+  const [state, setState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(lsKey);
+      return saved ? JSON.parse(saved) : defaultValue;
+    } catch { return defaultValue; }
+  });
+  const [loaded, setLoaded] = useState(true); // Always loaded (from localStorage)
 
   useEffect(() => {
     if (!uid) return;
-    // Timeout fallback: if Firestore doesn't respond in 8s, use default and continue
-    const timeout = setTimeout(() => {
-      setLoaded(true);
-    }, 8000);
-
-    const ref = doc(db, "users", uid, "data", key);
-    const unsub = onSnapshot(ref, (snap) => {
-      clearTimeout(timeout);
-      if (snap.exists()) {
-        const val = snap.data().value;
-        setState(val !== undefined ? val : defaultValue);
-      } else {
-        setState(defaultValue);
-      }
-      setLoaded(true);
-    }, (err) => {
-      clearTimeout(timeout);
-      console.error("Firestore error for", key, ":", err.code, err.message);
-      setLoaded(true); // Don't block the app
-    });
-    return () => { clearTimeout(timeout); unsub(); };
+    // Sync from Firebase in background after app shows
+    const timer = setTimeout(async () => {
+      try {
+        const ok = await loadFirebase();
+        if (!ok) return;
+        const unsub = await fbOnSnapshot(uid, key, (snap) => {
+          if (snap && snap.exists && snap.exists()) {
+            const val = snap.data().value;
+            if (val !== undefined) {
+              setState(val);
+              try { localStorage.setItem(lsKey, JSON.stringify(val)); } catch {}
+            }
+          }
+        });
+        return unsub;
+      } catch(e) { console.error("Firebase sync error:", e); }
+    }, 1000);
+    return () => clearTimeout(timer);
   }, [uid, key]);
 
   const setPersisted = useCallback((value) => {
     setState(prev => {
       const next = typeof value === "function" ? value(prev) : value;
+      // Save to localStorage immediately
+      try { localStorage.setItem(lsKey, JSON.stringify(next)); } catch {}
+      // Save to Firebase in background
       if (uid) {
-        const ref = doc(db, "users", uid, "data", key);
-        setDoc(ref, { value: next }, { merge: true }).catch(e => console.error("Save error:", e));
+        loadFirebase().then(ok => {
+          if (ok) fbSetDoc(uid, key, next).catch(e => console.error("Save err:", e));
+        });
       }
       return next;
     });
-  }, [uid, key]);
+  }, [uid, key, lsKey]);
 
   return [state, setPersisted, loaded];
 }
@@ -2962,10 +3009,11 @@ function LoginScreen({ onLogin }) {
     e.preventDefault();
     setError(""); setLoading(true);
     try {
+      await loadFirebase();
       if (isRegister) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        await fbRegister(email, password);
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        await fbSignIn(email, password);
       }
     } catch (err) {
       setError(err.message.replace("Firebase: ", "").replace(/\(auth.*\)/, ""));
@@ -3066,14 +3114,17 @@ export default function AppRoot() {
   const [initError, setInitError] = useState(null);
 
   useEffect(() => {
-    try {
-      const unsub = onAuthStateChanged(auth, u => setUser(u), err => {
-        setInitError(err.message); setUser(null);
-      });
-      return () => unsub();
-    } catch(e) {
-      setInitError(e.message); setUser(null);
-    }
+    loadFirebase().then(ok => {
+      if (!ok) { setInitError("Firebase failed to load. Check internet connection."); setUser(null); return; }
+      try {
+        import("firebase/auth").then(({ onAuthStateChanged }) => {
+          const unsub = onAuthStateChanged(auth, u => setUser(u), err => {
+            setInitError(err.message); setUser(null);
+          });
+          // store unsub for cleanup - just ignore for now
+        });
+      } catch(e) { setInitError(e.message); setUser(null); }
+    });
   }, []);
 
   if (initError) return (
@@ -3187,7 +3238,7 @@ function App({ uid, userEmail }) {
           ))}
           <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes}
             importCallbacks={importCallbacks} onExport={exportData}/>
-          <button onClick={()=>signOut(auth)}
+          <button onClick={()=>fbSignOut()}
             style={{background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,
               padding:"5px 10px",borderRadius:8,fontSize:11,fontWeight:600,minHeight:36}}>
             Sign Out
@@ -3222,7 +3273,7 @@ function App({ uid, userEmail }) {
               <div style={{display:"flex",gap:8}}>
                 <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes}
                   importCallbacks={importCallbacks} onExport={exportData}/>
-                <button onClick={()=>signOut(auth)}
+                <button onClick={()=>fbSignOut()}
                   style={{flex:1,background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,
                     padding:"10px",borderRadius:10,fontSize:13,fontWeight:600}}>
                   🚪 Sign Out
