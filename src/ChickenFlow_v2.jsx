@@ -3039,17 +3039,59 @@ function exportAllData(data) {
   a.href = url; a.download = `ChickenFlow_Backup_${dateStr}.json`; a.click();
   URL.revokeObjectURL(url);
 }
+class ErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { error: null }; }
+  componentDidCatch(err) { this.setState({ error: err.message || String(err) }); }
+  render() {
+    if (this.state.error) return (
+      <div style={{minHeight:"100dvh",background:"#080B12",color:"#fff",display:"flex",
+        flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif"}}>
+        <div style={{fontSize:36,marginBottom:12}}>🐔</div>
+        <div style={{fontSize:14,color:"#F59E0B",marginBottom:12,fontWeight:700}}>ChickenFlow - Error</div>
+        <div style={{fontSize:12,color:"#ef4444",background:"#200",borderRadius:8,
+          padding:14,maxWidth:320,wordBreak:"break-word"}}>{this.state.error}</div>
+        <button onClick={()=>window.location.reload()}
+          style={{marginTop:20,background:"#F59E0B",color:"#000",border:"none",
+            borderRadius:10,padding:"12px 28px",fontSize:14,fontWeight:700,cursor:"pointer"}}>
+          Reload App
+        </button>
+      </div>
+    );
+    return this.props.children;
+  }
+}
+
 export default function AppRoot() {
   const [user, setUser] = useState(undefined);
+  const [initError, setInitError] = useState(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, u => setUser(u));
-    return () => unsub();
+    try {
+      const unsub = onAuthStateChanged(auth, u => setUser(u), err => {
+        setInitError(err.message); setUser(null);
+      });
+      return () => unsub();
+    } catch(e) {
+      setInitError(e.message); setUser(null);
+    }
   }, []);
 
+  if (initError) return (
+    <div style={{minHeight:"100dvh",background:"#080B12",color:"#fff",display:"flex",
+      flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif"}}>
+      <div style={{fontSize:36,marginBottom:12}}>🐔</div>
+      <div style={{fontSize:14,color:"#F59E0B",marginBottom:12,fontWeight:700}}>Startup Error</div>
+      <div style={{fontSize:12,color:"#ef4444",background:"#200",borderRadius:8,
+        padding:14,maxWidth:320,wordBreak:"break-word"}}>{initError}</div>
+      <button onClick={()=>{setInitError(null);setUser(null);}}
+        style={{marginTop:16,background:"#F59E0B",color:"#000",border:"none",
+          borderRadius:10,padding:"12px 28px",fontSize:14,fontWeight:700}}>Try Again</button>
+    </div>
+  );
+
   if (user === undefined) return <><style>{css}</style><LoadingScreen /></>;
-  if (!user) return <><style>{css}</style><LoginScreen /></>;
-  return <App uid={user.uid} userEmail={user.email} />;
+  if (!user) return <ErrorBoundary><style>{css}</style><LoginScreen /></ErrorBoundary>;
+  return <ErrorBoundary><App uid={user.uid} userEmail={user.email} /></ErrorBoundary>;
 }
 
 function App({ uid, userEmail }) {
