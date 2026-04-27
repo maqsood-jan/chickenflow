@@ -2967,7 +2967,7 @@ function LoginScreen({ onLogin }) {
   };
 
   return (
-    <div style={{minHeight:"100vh",minHeight:"100dvh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+    <div style={{minHeight:"100dvh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
       <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:20,padding:"32px 24px",width:"100%",maxWidth:380}}>
         <div style={{textAlign:"center",marginBottom:28}}>
           <div style={{fontSize:36,marginBottom:8}}>🐔</div>
@@ -3009,7 +3009,7 @@ function LoginScreen({ onLogin }) {
 // ─── LOADING SCREEN ───────────────────────────────────────────────────────────
 function LoadingScreen() {
   return (
-    <div style={{minHeight:"100vh",minHeight:"100dvh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{minHeight:"100dvh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{textAlign:"center"}}>
         <div style={{fontSize:40,marginBottom:12}}>🐔</div>
         <div style={{color:C.muted,fontSize:14}}>Loading ChickenFlow...</div>
