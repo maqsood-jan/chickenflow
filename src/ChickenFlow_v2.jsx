@@ -2913,8 +2913,14 @@ function useFirestoreState(uid, key, defaultValue) {
 
   useEffect(() => {
     if (!uid) return;
+    // Timeout fallback: if Firestore doesn't respond in 8s, use default and continue
+    const timeout = setTimeout(() => {
+      setLoaded(true);
+    }, 8000);
+
     const ref = doc(db, "users", uid, "data", key);
     const unsub = onSnapshot(ref, (snap) => {
+      clearTimeout(timeout);
       if (snap.exists()) {
         const val = snap.data().value;
         setState(val !== undefined ? val : defaultValue);
@@ -2923,10 +2929,11 @@ function useFirestoreState(uid, key, defaultValue) {
       }
       setLoaded(true);
     }, (err) => {
-      console.error("Firestore error:", err);
-      setLoaded(true);
+      clearTimeout(timeout);
+      console.error("Firestore error for", key, ":", err.code, err.message);
+      setLoaded(true); // Don't block the app
     });
-    return () => unsub();
+    return () => { clearTimeout(timeout); unsub(); };
   }, [uid, key]);
 
   const setPersisted = useCallback((value) => {
@@ -2934,7 +2941,7 @@ function useFirestoreState(uid, key, defaultValue) {
       const next = typeof value === "function" ? value(prev) : value;
       if (uid) {
         const ref = doc(db, "users", uid, "data", key);
-        setDoc(ref, { value: next }, { merge: true }).catch(console.error);
+        setDoc(ref, { value: next }, { merge: true }).catch(e => console.error("Save error:", e));
       }
       return next;
     });
@@ -3008,6 +3015,11 @@ function LoginScreen({ onLogin }) {
 
 // ─── LOADING SCREEN ───────────────────────────────────────────────────────────
 function LoadingScreen() {
+  const [dots, setDots] = React.useState(".");
+  useEffect(() => {
+    const t = setInterval(() => setDots(d => d.length >= 3 ? "." : d + "."), 500);
+    return () => clearInterval(t);
+  }, []);
   return (
     <div style={{minHeight:"100dvh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{textAlign:"center"}}>
@@ -3074,7 +3086,14 @@ function App({ uid, userEmail }) {
     {id:"reports",        label:"📋 Reports"},
   ];
 
-  if (!allLoaded) return <LoadingScreen />;
+  // Show app after 10s even if some data didn't load (prevents black screen)
+  const [forceShow, setForceShow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setForceShow(true), 10000);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (!allLoaded && !forceShow) return <LoadingScreen />;
 
   const pageTitles = {
     projects: "🚛 Projects", customers: "👤 Customers", suppliers: "🏭 Suppliers",
