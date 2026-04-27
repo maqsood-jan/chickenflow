@@ -1,0 +1,12 @@
+{
+  "appId": "com.chickenflow.app",
+  "appName": "ChickenFlow",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#080B12"
+  }
+}
