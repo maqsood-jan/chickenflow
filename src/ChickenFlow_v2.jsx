@@ -1,9 +1,6 @@
 import { useState, useRef, useMemo, useEffect, useCallback } from "react";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// Firebase loaded via CDN scripts in index.html
+// Accessed via window.firebase compat SDK
 
 // ─── FIREBASE CONFIG ─ Replace with your own from Firebase Console ──────────
 const firebaseConfig = {
@@ -15,9 +12,19 @@ const firebaseConfig = {
   appId: "1:264036211412:web:13436225e08ef36a42b941"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
+// Firebase will be initialized after SDK loads
+let auth = null;
+let db = null;
+function initFirebase() {
+  if (!window.firebase) return false;
+  if (!window._fbInitialized) {
+    window.firebase.initializeApp(firebaseConfig);
+    window._fbInitialized = true;
+  }
+  auth = window.firebase.auth();
+  db = window.firebase.firestore();
+  return true;
+}
 
 
 // ─── UTILS ───────────────────────────────────────────────────────────────────
@@ -2913,25 +2920,29 @@ function useFirestoreState(uid, key, defaultValue) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!uid) return;
-    const ref = doc(db, "users", uid, "data", key);
-    const unsub = onSnapshot(ref, (snap) => {
-      if (snap.exists()) {
-        setState(snap.data().value ?? defaultValue);
-      } else {
-        setState(defaultValue);
-      }
-      setLoaded(true);
-    });
+    if (!uid || !db) return;
+    const unsub = db.collection("users").doc(uid).collection("data").doc(key)
+      .onSnapshot((snap) => {
+        if (snap.exists) {
+          const val = snap.data().value;
+          setState(val !== undefined ? val : defaultValue);
+        } else {
+          setState(defaultValue);
+        }
+        setLoaded(true);
+      }, (err) => {
+        console.error("Firestore error:", err);
+        setLoaded(true);
+      });
     return () => unsub();
   }, [uid, key]);
 
   const setPersisted = useCallback((value) => {
     setState(prev => {
       const next = typeof value === "function" ? value(prev) : value;
-      if (uid) {
-        const ref = doc(db, "users", uid, "data", key);
-        setDoc(ref, { value: next }, { merge: true }).catch(console.error);
+      if (uid && db) {
+        db.collection("users").doc(uid).collection("data").doc(key)
+          .set({ value: next }, { merge: true }).catch(console.error);
       }
       return next;
     });
@@ -2953,9 +2964,9 @@ function LoginScreen({ onLogin }) {
     setError(""); setLoading(true);
     try {
       if (isRegister) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        await auth.createUserWithEmailAndPassword(email, password);
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        await auth.signInWithEmailAndPassword(email, password);
       }
     } catch (err) {
       setError(err.message.replace("Firebase: ", "").replace(/\(auth.*\)/, ""));
@@ -3025,13 +3036,30 @@ function exportAllData(data) {
   URL.revokeObjectURL(url);
 }
 export default function AppRoot() {
-  const [user, setUser] = useState(undefined); // undefined=loading, null=logged out
+  const [user, setUser] = useState(undefined);
+  const [fbReady, setFbReady] = useState(false);
+
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, u => setUser(u));
-    return () => unsub();
+    // Poll for Firebase SDK to be available (loaded via CDN scripts)
+    let attempts = 0;
+    const tryInit = () => {
+      if (initFirebase()) {
+        setFbReady(true);
+        const unsub = auth.onAuthStateChanged(u => setUser(u));
+        return unsub;
+      } else if (attempts < 50) {
+        attempts++;
+        setTimeout(tryInit, 200);
+      } else {
+        console.error("Firebase SDK failed to load");
+        setUser(null);
+      }
+    };
+    const unsub = tryInit();
+    return () => { if (typeof unsub === "function") unsub(); };
   }, []);
 
-  if (user === undefined) return <><style>{css}</style><LoadingScreen /></>;
+  if (!fbReady || user === undefined) return <><style>{css}</style><LoadingScreen /></>;
   if (!user) return <><style>{css}</style><LoginScreen /></>;
   return <App uid={user.uid} userEmail={user.email} />;
 }
@@ -3122,7 +3150,7 @@ function App({ uid, userEmail }) {
           ))}
           <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes}
             importCallbacks={importCallbacks} onExport={exportData}/>
-          <button onClick={()=>signOut(auth)}
+          <button onClick={()=>auth.signOut()}
             style={{background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,
               padding:"5px 10px",borderRadius:8,fontSize:11,fontWeight:600,minHeight:36}}>
             Sign Out
@@ -3157,7 +3185,7 @@ function App({ uid, userEmail }) {
               <div style={{display:"flex",gap:8}}>
                 <BackupPanel autoBackupMinutes={autoBackupMinutes} setAutoBackupMinutes={setAutoBackupMinutes}
                   importCallbacks={importCallbacks} onExport={exportData}/>
-                <button onClick={()=>signOut(auth)}
+                <button onClick={()=>auth.signOut()}
                   style={{flex:1,background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,
                     padding:"10px",borderRadius:10,fontSize:13,fontWeight:600}}>
                   🚪 Sign Out
