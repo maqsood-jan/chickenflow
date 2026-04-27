@@ -10,6 +10,7 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "firebase": "^10.12.2",
     "@capacitor/core": "^6.2.0",
     "@capacitor/android": "^6.2.0"
   },
