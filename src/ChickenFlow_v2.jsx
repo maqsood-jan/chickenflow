@@ -270,7 +270,7 @@ function SwipeCard({onEdit,onDelete,children,disabled=false}){
   const close=()=>setOffset(0);
 
   return(
-    <div style={{position:"relative",overflow:"hidden"}}>
+    <div style={{position:"relative",overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
       <div style={{position:"absolute",right:0,top:0,bottom:0,display:"flex",zIndex:0}}>
         {onEdit&&<button onClick={()=>{close();onEdit();haptic("light");}}
           style={{width:70,background:"#2563EB",color:"#fff",border:"none",fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2}}>
@@ -718,8 +718,8 @@ function AccountsPage({accounts,setAccounts,transactions,setTransactions,expense
         <div style={{marginLeft:"auto",fontSize:13,color:C.muted,fontWeight:600}}>{selAccId==="all"?"All Transactions":accounts.find(a=>a.id===selAccId)?.name} <span style={{color:C.text}}>({filteredTxns.length})</span></div>
       </div>
       {filteredTxns.length===0?<Empty icon="📒" text="No transactions yet."/>:(
-        <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-          <table style={{width:"100%",borderCollapse:"collapse"}}>
+        <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
             <thead><tr><TH ch="Date"/><TH ch="Description"/><TH ch="Type"/><TH ch="Project"/><TH ch="Account"/><TH ch="In" right/><TH ch="Out" right/><TH ch=""/></tr></thead>
             <tbody>
               {filteredTxns.map(t=>{
@@ -859,7 +859,7 @@ function AccountsPage({accounts,setAccounts,transactions,setTransactions,expense
                         <span style={{fontSize:10,color:C.muted}}>{fmtRs(spent)} of {fmtRs(budget)}</span>
                         <span style={{fontSize:10,fontWeight:700,color:over?C.red:pct>75?C.orange:C.green}}>{pct}%</span>
                       </div>
-                      <div style={{background:C.card,borderRadius:20,height:6,overflow:"hidden"}}>
+                      <div style={{background:C.card,borderRadius:20,height:6,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
                         <div style={{width:pct+"%",height:"100%",background:over?C.red:pct>75?C.orange:C.green,borderRadius:20,transition:"width 0.3s"}}/>
                       </div>
                     </div>
@@ -1082,8 +1082,8 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
                     <Btn color="purple" small onClick={()=>{setSelLabourer(viewLabourer);setForm({effectiveFrom:today()});setModal("updateSalary");}}>✏️ Update Salary</Btn>
                   </div>
                   {(viewLabourer.salaryHistory||[]).length===0?<div style={{color:C.muted,fontSize:13}}>No history</div>:(
-                    <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
-                      <table style={{width:"100%",borderCollapse:"collapse"}}>
+                    <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                      <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                         <thead><tr><TH ch="Effective From"/><TH ch="Monthly Salary" right/><TH ch="Note"/></tr></thead>
                         <tbody>{[...(viewLabourer.salaryHistory||[])].sort((a,b)=>b.effectiveFrom.localeCompare(a.effectiveFrom)).map((h,i)=>(
                           <tr key={h.id}><TD color={C.muted}>{h.effectiveFrom}</TD><TD right mono color={C.amber} bold>{fmtRs(h.amount)}</TD><TD color={C.muted}>{h.note||"—"}{i===0&&<span style={{marginLeft:6,background:C.greenSoft,color:C.green,padding:"1px 7px",borderRadius:10,fontSize:10,fontWeight:700}}>CURRENT</span>}</TD></tr>
@@ -1181,8 +1181,8 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
                 {/* Payment history */}
                 <div style={{fontSize:14,fontWeight:700,color:C.muted,marginBottom:12}}>PAYMENT HISTORY</div>
                 {viewTxns.length===0?<Empty icon="💸" text="No payments yet."/>:(
-                  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                    <table style={{width:"100%",borderCollapse:"collapse"}}>
+                  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                    <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                       <thead><tr><TH ch="Date"/><TH ch="Type"/><TH ch="For Month/Period"/><TH ch="Project"/><TH ch="Account"/><TH ch="Amount" right/></tr></thead>
                       <tbody>{viewTxns.map(t=>{
                         const cfg=TXN_TYPES[t.type]||{label:t.type,color:C.muted};
@@ -1259,8 +1259,8 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
           <div>
             <div style={{marginBottom:12,fontSize:14,fontWeight:700,color:C.muted}}>RECENT PAYMENTS</div>
             {allSalaryTxns.length===0?<Empty icon="💸" text="No salary payments yet."/>:(
-              <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead><tr><TH ch="Date"/><TH ch="Labourer"/><TH ch="Type"/><TH ch="Project"/><TH ch="Amount" right/></tr></thead>
                   <tbody>
                     {allSalaryTxns.slice(0,20).map(t=>{
@@ -1566,8 +1566,8 @@ function CustomersPage({customers,setCustomers}){
       </div>
       <div style={{marginBottom:14}}><input placeholder="🔍  Search by name or city…" value={search} onChange={e=>setSearch(e.target.value)} style={{maxWidth:340}}/></div>
       {customers.length===0?<Empty icon="👤" text="No customers yet."/>:(
-        <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-          <table style={{width:"100%",borderCollapse:"collapse"}}>
+        <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
             <thead><tr>{["Name","Phone","City","Default Rate","Credit Limit","Balance Status","Action"].map(h=><TH key={h} ch={h}/>)}</tr></thead>
             <tbody>{filtered.map(cu=>(
               <tr key={cu.id}>
@@ -1586,7 +1586,7 @@ function CustomersPage({customers,setCustomers}){
                       <span style={{fontSize:11,color:over?C.red:C.muted}}>{over?"⚠️ OVER LIMIT":"Within limit"}</span>
                       <span className="mono" style={{fontSize:11,color:over?C.red:C.green,fontWeight:700}}>{pct}%</span>
                     </div>
-                    <div style={{background:C.card2,borderRadius:20,height:5,overflow:"hidden"}}>
+                    <div style={{background:C.card2,borderRadius:20,height:5,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
                       <div style={{width:pct+"%",height:"100%",background:over?C.red:pct>75?C.orange:C.green,borderRadius:20,transition:"width 0.3s"}}/>
                     </div>
                   </div>;
@@ -1649,8 +1649,8 @@ function CustomersPage({customers,setCustomers}){
       {/* ── BATCH RATE UPDATE ── */}
       {modal==="batchRate"&&(<Modal title="✏️ Update Rates" onSave={saveBatchRates} saveLabel="Save All" onClose={()=>setModal(null)} width={680}>
         <input placeholder="🔍  Filter…" value={rateSearch} onChange={e=>setRateSearch(e.target.value)} style={{marginBottom:12}}/>
-        <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",maxHeight:420,overflowY:"auto"}}>
-          <table style={{width:"100%",borderCollapse:"collapse"}}>
+        <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",maxHeight:420,overflowY:"auto"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
             <thead style={{position:"sticky",top:0,background:C.card3,zIndex:1}}><tr><TH ch="Customer"/><TH ch="City"/><TH ch="Current Rate"/><TH ch="New Rate"/></tr></thead>
             <tbody>{rateFiltered.map(cu=>(
               <tr key={cu.id}><TD bold>{cu.name}</TD><TD color={C.muted}>{cu.city||"—"}</TD>
@@ -1668,8 +1668,8 @@ function CustomersPage({customers,setCustomers}){
           💡 Opening balance = amount the customer owed <strong>before</strong> you started using this app. Leave blank to keep existing value.
         </div>
         <input placeholder="🔍  Filter…" value={balSearch} onChange={e=>setBalSearch(e.target.value)} style={{marginBottom:12}}/>
-        <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",maxHeight:420,overflowY:"auto"}}>
-          <table style={{width:"100%",borderCollapse:"collapse"}}>
+        <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",maxHeight:420,overflowY:"auto"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
             <thead style={{position:"sticky",top:0,background:C.card3,zIndex:1}}><tr><TH ch="Customer"/><TH ch="City"/><TH ch="Current Opening Bal"/><TH ch="New Opening Bal (Rs)"/></tr></thead>
             <tbody>{balFiltered.map(cu=>(
               <tr key={cu.id}><TD bold>{cu.name}</TD><TD color={C.muted}>{cu.city||"—"}</TD>
@@ -1696,8 +1696,8 @@ function CustomersPage({customers,setCustomers}){
         {importPreview.length>0?(
           <div>
             <div style={{fontWeight:700,marginBottom:10,color:C.green}}>✅ {importPreview.length} rows ready</div>
-            <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",maxHeight:300,overflowY:"auto"}}>
-              <table style={{width:"100%",borderCollapse:"collapse"}}>
+            <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",maxHeight:300,overflowY:"auto"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                 <thead style={{position:"sticky",top:0,background:C.card3}}><tr>{["Name","Phone","City","Rate","Opening Bal"].map(h=><TH key={h} ch={h}/>)}</tr></thead>
                 <tbody>{importPreview.map((r,i)=>{const exists=customers.some(c=>c.name.toLowerCase()===r.name.toLowerCase());return(
                   <tr key={i}>
@@ -1730,8 +1730,8 @@ function CustomersPage({customers,setCustomers}){
               <span style={{fontWeight:700,color:C.green}}>✅ {balImportPreview.filter(r=>r.match).length} matched</span>
               {balImportPreview.filter(r=>!r.match).length>0&&<span style={{color:C.red,fontWeight:700}}>⚠ {balImportPreview.filter(r=>!r.match).length} not found</span>}
             </div>
-            <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",maxHeight:320,overflowY:"auto"}}>
-              <table style={{width:"100%",borderCollapse:"collapse"}}>
+            <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",maxHeight:320,overflowY:"auto"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                 <thead style={{position:"sticky",top:0,background:C.card3}}><tr><TH ch="Name in File"/><TH ch="Matched Customer"/><TH ch="Opening Balance" right/></tr></thead>
                 <tbody>{balImportPreview.map((r,i)=>(
                   <tr key={i} style={{background:r.match?"transparent":C.redSoft}}>
@@ -1892,8 +1892,8 @@ function SuppliersPage({suppliers,setSuppliers,vehicles}){
         {/* Purchase history table */}
         <div style={{fontSize:11,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>Purchase History ({st.purchases.length})</div>
         {st.purchases.length===0?<Empty icon="📦" text="No purchases from this supplier"/>:(
-          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-            <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
               <thead><tr><TH ch="Date"/><TH ch="Vehicle"/><TH ch="Weight"/><TH ch="Rate"/><TH ch="Amount" right/><TH ch="Paid" right/><TH ch="Balance" right/></tr></thead>
               <tbody>
                 {st.purchases.sort((a,b)=>b.date.localeCompare(a.date)).map(p=>(
@@ -1985,7 +1985,7 @@ function SuppliersPage({suppliers,setSuppliers,vehicles}){
                     </div>
                     <span className="mono" style={{fontSize:12,fontWeight:700,color:col}}>Rs.{fmt(s.avgRate)}/kg</span>
                   </div>
-                  <div style={{background:C.card2,borderRadius:20,height:10,overflow:"hidden"}}>
+                  <div style={{background:C.card2,borderRadius:20,height:10,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
                     <div style={{width:pct+"%",height:"100%",background:col,borderRadius:20,transition:"width 0.4s ease"}}/>
                   </div>
                   <div style={{display:"flex",gap:12,marginTop:3}}>
@@ -2187,8 +2187,8 @@ function BatchReceiptPage({vehicles,setVehicles,customers,accounts,labourers,add
               </Btn>
             </div>
           </div>
-          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-            <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
               <thead style={{position:"sticky",top:0,background:C.card3,zIndex:1}}>
                 <tr><TH ch="#"/><TH ch="Customer"/><TH ch="Invoices"/><TH ch="Total Pending" right/><TH ch="Oldest Invoice"/><TH ch="Amount to Receive" right/></tr>
               </thead>
@@ -2461,8 +2461,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
             {daySales.length>0&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontSize:12,color:C.amber,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:8}}>🧾 Sales ({daySales.length})</div>
-                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr>{["Customer","Vehicle","Weight","Rate","Amount","Collected","Balance"].map(h=><TH key={h} ch={h}/>)}</tr></thead>
                     <tbody>
                       {daySales.map(s=><tr key={s.id}>
@@ -2483,8 +2483,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
             {dayReceipts.length>0&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontSize:12,color:C.teal,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:8}}>💰 Receipts ({dayReceipts.length})</div>
-                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr>{["Customer","Vehicle","Invoice","Method","Amount"].map(h=><TH key={h} ch={h}/>)}</tr></thead>
                     <tbody>
                       {dayReceipts.map(r=><tr key={r.id}><TD bold>{r.customerName}</TD><TD color={C.muted}>{r.vehicleNo}</TD><TD color={C.muted}>{r.receiptNo}</TD><TD><Tag color={C.blue}>{r.method||"Cash"}</Tag></TD><TD mono bold color={C.teal}>{fmtRs(r.amount)}</TD></tr>)}
@@ -2499,8 +2499,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
             {topCusts.length>0&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontSize:12,color:C.purple,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:8}}>👤 Top Customers Today</div>
-                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr>{["Customer","Weight","Sale Value"].map(h=><TH key={h} ch={h}/>)}</tr></thead>
                     <tbody>{topCusts.map((c,i)=><tr key={i}><TD bold>{c.name}</TD><TD mono>{c.wt.toLocaleString()} kg</TD><TD mono bold color={C.green}>{fmtRs(c.amt)}</TD></tr>)}</tbody>
                   </table>
@@ -2512,8 +2512,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
             {vehicleBreakdown.length>0&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontSize:12,color:C.blue,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:8}}>🚛 Vehicle Breakdown</div>
-                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr>{["Vehicle","Sales","Sale Wt","Sale Amt","Collected","Purchases","Purch Wt"].map(h=><TH key={h} ch={h}/>)}</tr></thead>
                     <tbody>{vehicleBreakdown.map((v,i)=><tr key={i}><TD bold color={C.amber}>{v.vehicleNo}</TD><TD color={C.muted}>{v.sales}</TD><TD mono>{v.salesWt.toLocaleString()} kg</TD><TD mono color={C.green}>{fmtRs(v.salesAmt)}</TD><TD mono color={C.teal}>{fmtRs(v.receipts)}</TD><TD color={C.muted}>{v.purchases}</TD><TD mono>{v.purchWt.toLocaleString()} kg</TD></tr>)}</tbody>
                   </table>
@@ -2564,8 +2564,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               <StatBox label="Pending" value={fmtRs(salesPending)} color={salesPending>0?C.red:C.muted}/>
             </div>
             {salesInRange.length===0?<Empty icon="📊" text="No sales in this date range"/>:(
-              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead><tr><TH ch="Date"/><TH ch="Receipt #"/><TH ch="Customer"/><TH ch="Vehicle"/><TH ch="Weight" right/><TH ch="Rate" right/><TH ch="Amount" right/><TH ch="Collected" right/><TH ch="Pending" right/></tr></thead>
                   <tbody>
                     {salesInRange.map(s=>{const collected=(s.receipts||[]).reduce((a,r)=>a+n(r.amount),0);const pending=n(s.weight)*n(s.rate)-collected;
@@ -2611,8 +2611,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               <StatBox label="Unique Customers" value={new Set(receiptsInRange.map(r=>r.customerId)).size} color={C.blue}/>
             </div>
             {receiptsInRange.length===0?<Empty icon="🧾" text="No receipts in this date range"/>:(
-              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead><tr><TH ch="Date"/><TH ch="Customer"/><TH ch="Invoice #"/><TH ch="Vehicle"/><TH ch="Method"/><TH ch="Collector"/><TH ch="Amount" right/></tr></thead>
                   <tbody>
                     {receiptsInRange.map((r,i)=>(<tr key={i}><TD color={C.muted}>{r.date}</TD><TD bold>{r.customerName}</TD><TD color={C.amber} mono>{r.receiptNo}</TD><TD color={C.muted}>{r.vehicleNo}</TD><TD><Tag color={C.blue}>{r.method||"Cash"}</Tag></TD><TD color={C.muted}>{r.collector||"—"}</TD><TD right mono color={C.green} bold>{fmtRs(r.amount)}</TD></tr>))}
@@ -2688,8 +2688,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               </div>
 
               {/* Combined Ledger */}
-              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",marginBottom:20}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",marginBottom:20}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead>
                     <tr style={{background:C.card3}}>
                       <TH ch="Date"/>
@@ -2832,8 +2832,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               </div>
               <div style={{fontSize:14,fontWeight:700,marginBottom:10,color:C.muted}}>PURCHASE HISTORY</div>
               {supPurchases.length===0?<div style={{color:C.muted,fontSize:13,marginBottom:16}}>No purchases</div>:(
-                <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",marginBottom:20}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",marginBottom:20}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr><TH ch="Date"/><TH ch="Vehicle"/><TH ch="Weight" right/><TH ch="Rate" right/><TH ch="Amount" right/><TH ch="Paid" right/><TH ch="Balance" right/></tr></thead>
                     <tbody>{supPurchases.map(p=>{const paid=(p.payments||[]).reduce((s,r)=>s+n(r.amount),0);const bal=n(p.weight)*n(p.rate)-paid;return(<tr key={p.id}><TD color={C.muted}>{p.date}</TD><TD color={C.muted}>{p.vehicleNo}</TD><TD right mono>{fmtKg(p.weight)}</TD><TD right mono color={C.muted}>Rs.{fmt(p.rate)}</TD><TD right mono color={C.amber} bold>{fmtRs(n(p.weight)*n(p.rate))}</TD><TD right mono color={C.green}>{fmtRs(paid)}</TD><TD right mono color={bal>0?C.red:C.muted} bold>{bal>0?fmtRs(bal):"✓"}</TD></tr>);})}</tbody>
                   </table>
@@ -2841,8 +2841,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               )}
               <div style={{fontSize:14,fontWeight:700,marginBottom:10,color:C.muted}}>PAYMENT HISTORY</div>
               {supPayments.length===0?<div style={{color:C.muted,fontSize:13}}>No payments recorded</div>:(
-                <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr><TH ch="Date"/><TH ch="Vehicle"/><TH ch="Method"/><TH ch="Note"/><TH ch="Amount" right/></tr></thead>
                     <tbody>{supPayments.map((p,i)=>(<tr key={i}><TD color={C.muted}>{p.date}</TD><TD color={C.muted}>{p.vehicleNo}</TD><TD><Tag color={C.amber}>{p.method||"Cash"}</Tag></TD><TD color={C.muted}>{p.note||"—"}</TD><TD right mono color={C.green} bold>{fmtRs(p.amount)}</TD></tr>))}<tr><td colSpan={4} style={{padding:"10px 12px",background:C.card2,fontWeight:700,fontSize:12,color:C.muted}}>TOTAL PAID</td><td style={{padding:"10px 12px",background:C.card2,textAlign:"right"}}><span className="mono" style={{color:C.green,fontWeight:700}}>{fmtRs(supPaidTotal)}</span></td></tr></tbody>
                   </table>
@@ -2872,8 +2872,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
             <StatBox label="Total Receivable" value={fmtRs(totalDue)} color={C.red}/>
           </div>
           {rows.length===0?<Empty icon="🎉" text="All customers are fully paid!"/>:(
-            <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-              <table style={{width:"100%",borderCollapse:"collapse"}}>
+            <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                 <thead><tr><TH ch="#"/><TH ch="Customer"/><TH ch="Invoices"/><TH ch="Total Due" right/><TH ch="Oldest Invoice"/><TH ch="Days Outstanding" right/></tr></thead>
                 <tbody>{rows.map((r,i)=>{
                   const days=daysDiff(r.oldest);
@@ -2899,8 +2899,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         const total=rows.reduce((s,r)=>s+r.owed,0);
         return(<div>
           <StatBox label="Total Payable to Suppliers" value={fmtRs(total)} color={C.red}/>
-          <div style={{marginTop:16,background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-            <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <div style={{marginTop:16,background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
               <thead><tr><TH ch="Supplier"/><TH ch="Unpaid Purchases"/><TH ch="Total Owed" right/></tr></thead>
               <tbody>{rows.length===0?<tr><td colSpan={3} style={{padding:20,textAlign:"center",color:C.muted,fontSize:13}}>All suppliers fully paid</td></tr>:rows.map(r=><tr key={r.id}><TD bold>{r.name}</TD><TD color={C.muted}>{r.count}</TD><TD right mono color={C.red} bold>{fmtRs(r.owed)}</TD></tr>)}</tbody>
             </table>
@@ -2922,8 +2922,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
             <StatBox label="Total Cost" value={fmtRs(totCost)} color={C.red}/>
             <StatBox label="Net Profit/Loss" value={fmtRs(Math.abs(totPnl))} color={totPnl>=0?C.green:C.red} sub={totPnl>=0?"Profit":"Loss"}/>
           </div>
-          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-            <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
               <thead><tr><TH ch="Vehicle"/><TH ch="Date"/><TH ch="Status"/><TH ch="Transfers" right/><TH ch="Revenue" right/><TH ch="Total Cost" right/><TH ch="P&L" right/></tr></thead>
               <tbody>
                 {rows.map(r=>{
@@ -3567,7 +3567,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                   <StatBox label="Paid" value={fmtRs(paid)} color={C.green}/>
                   <StatBox label="Balance" value={fmtRs(bal)} color={bal>0?C.red:C.green}/>
                 </div>
-                {p.payments?.length>0&&(<table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{p.payments.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.amber}>{r.method}</Tag></TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm(`Delete payment of ${fmtRs(r.amount)}?`))mut(v=>({...v,purchases:v.purchases.map(x=>x.id===p.id?{...x,payments:(x.payments||[]).filter(pay=>pay.id!==r.id)}:x)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table>)}
+                {p.payments?.length>0&&(<div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{p.payments.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.amber}>{r.method}</Tag></TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm(`Delete payment of ${fmtRs(r.amount)}?`))mut(v=>({...v,purchases:v.purchases.map(x=>x.id===p.id?{...x,payments:(x.payments||[]).filter(pay=>pay.id!==r.id)}:x)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table>)}
                 {vehicle.status==="active"&&bal>0&&<Btn color="amber" small onClick={()=>{setSelId(p.id);openModal("supplierpay");}}>+ Record Payment to Supplier</Btn>}
               </div>
             );
@@ -3613,7 +3613,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                   <StatBox label="Collected" value={fmtRs(collected)} color={C.green}/>
                   <StatBox label="Balance" value={fmtRs(saleBalance)} color={saleBalance>0?C.red:C.green}/>
                 </div>
-                {(sale.receipts||[]).length>0&&(<table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Acct","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{sale.receipts.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.blue}>{r.method||"Cash"}</Tag></TD><TD color={C.muted}>{r.accountName||"—"}</TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm("Delete this receipt?"))mut(v=>({...v,sales:v.sales.map(s=>s.id===sale.id?{...s,receipts:(s.receipts||[]).filter(x=>x.id!==r.id)}:s)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table>)}
+                {(sale.receipts||[]).length>0&&(<div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Acct","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{sale.receipts.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.blue}>{r.method||"Cash"}</Tag></TD><TD color={C.muted}>{r.accountName||"—"}</TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm("Delete this receipt?"))mut(v=>({...v,sales:v.sales.map(s=>s.id===sale.id?{...s,receipts:(s.receipts||[]).filter(x=>x.id!==r.id)}:s)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table>)}
                 <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
                   {saleBalance>0&&<Btn color="green" small onClick={()=>{setSelId(sale.id);openModal("receipt");}}>+ Add Receipt</Btn>}
                   <button onClick={()=>setInvoiceSale(sale)} style={{background:C.blueSoft,color:C.blue,border:`1px solid ${C.blue}33`,borderRadius:6,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer"}}>📄 Invoice</button>
@@ -3677,8 +3677,8 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
             {outTransfers.length>0&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontSize:11,color:C.orange,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>📤 Transfers Out ({outTransfers.length})</div>
-                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr><TH ch="Date"/><TH ch="Weight"/><TH ch="To"/><TH ch="Type"/><TH ch="Note"/><TH ch=""/></tr></thead>
                     <tbody>
                       {outTransfers.map(t=>(
@@ -3713,8 +3713,8 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
             {inTransfers.length>0&&(
               <div style={{marginBottom:16}}>
                 <div style={{fontSize:11,color:C.blue,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>📥 Received From Other Vehicles ({inTransfers.length})</div>
-                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                     <thead><tr><TH ch="Date"/><TH ch="Weight"/><TH ch="From Vehicle"/><TH ch="Note"/></tr></thead>
                     <tbody>
                       {inTransfers.map(t=>(
@@ -3750,8 +3750,8 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
           {vehicle.expenses.length>0&&(
             <>
               <div style={{fontSize:13,color:C.muted,fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.06em"}}>Direct Vehicle Expenses</div>
-              <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden",marginBottom:16}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch",marginBottom:16}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead><tr>{["Date","Description","Type","Paid From","Amount"].map(h=><TH key={h} ch={h}/>)}</tr></thead>
                   <tbody>
                     {vehicle.expenses.map(e=><tr key={e.id}><TD color={C.muted}>{e.date}</TD><TD bold>{e.description}</TD><TD><Tag color={C.purple}>{e.type}</Tag></TD><TD color={C.red} mono bold>{fmtRs(e.amount)}</TD><TD><button onClick={()=>{if(window.confirm(`Delete expense "${e.description}" Rs.${fmt(e.amount)}?`))mut(v=>({...v,expenses:v.expenses.filter(x=>x.id!==e.id)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}
@@ -3765,8 +3765,8 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
           {linkedTxns.length>0&&(
             <>
               <div style={{fontSize:13,color:C.teal,fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.06em"}}>🔗 Linked Expenses & Salaries (from Accounts/Salaries)</div>
-              <div style={{background:C.card,border:`1px solid ${C.teal}33`,borderRadius:12,overflow:"hidden",marginBottom:16}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{background:C.card,border:`1px solid ${C.teal}33`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch",marginBottom:16}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead><tr><TH ch="Date"/><TH ch="Description"/><TH ch="Type"/><TH ch="Amount" right/></tr></thead>
                   <tbody>
                     {linkedTxns.map(t=>{const cfg=TXN_TYPES[t.type]||{label:t.type,color:C.muted};return(<tr key={t.id}><TD>{t.date}</TD><TD bold>{t.description}</TD><TD><Tag color={cfg.color}>{cfg.label}</Tag></TD><TD right mono color={C.orange} bold>{fmtRs(t.amount)}</TD></tr>);})}
@@ -3864,7 +3864,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                         <span style={{fontSize:12,color:C.muted,fontWeight:600}}>{b.label}</span>
                         <span className="mono" style={{fontSize:12,fontWeight:700,color:b.color}}>{fmtRs(b.val)}</span>
                       </div>
-                      <div style={{background:C.card2,borderRadius:20,height:14,overflow:"hidden"}}>
+                      <div style={{background:C.card2,borderRadius:20,height:14,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
                         <div style={{width:pct+"%",height:"100%",background:b.color,borderRadius:20,transition:"width 0.5s ease",minWidth:pct>0?"4px":"0"}}/>
                       </div>
                     </div>
@@ -3945,7 +3945,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                           <span style={{fontSize:11,color:C.muted}}>{pct}%</span>
                         </div>
                       </div>
-                      <div style={{background:C.card2,borderRadius:20,height:6,overflow:"hidden"}}>
+                      <div style={{background:C.card2,borderRadius:20,height:6,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
                         <div style={{width:pct+"%",height:"100%",background:C.blue,borderRadius:20}}/>
                       </div>
                     </div>
@@ -3958,7 +3958,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
             {Object.keys(expByType).length>0&&(
               <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"16px 18px",marginBottom:16}}>
                 <div style={{fontSize:12,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:12}}>💸 Expense Breakdown</div>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+                <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead><tr><TH ch="Type"/><TH ch="Amount" right/><TH ch="% of Cost" right/></tr></thead>
                   <tbody>
                     {Object.entries(expByType).sort((a,b)=>b[1]-a[1]).map(([type,amt])=>(
@@ -4112,8 +4112,8 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                 {importSalesPreview.filter(r=>!r.customerFound).length>0&&<span style={{color:C.red,marginLeft:10}}>{importSalesPreview.filter(r=>!r.customerFound).length} unmatched customers</span>}
                 {importSalesPreview.filter(r=>r.customerFound&&(!r.weight||!r.rate)).length>0&&<span style={{color:C.amber,marginLeft:10}}>{importSalesPreview.filter(r=>r.customerFound&&(!r.weight||!r.rate)).length} missing weight/rate</span>}
               </div>
-              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",maxHeight:320,overflowY:"auto",marginBottom:14}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",maxHeight:320,overflowY:"auto",marginBottom:14}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead style={{position:"sticky",top:0,background:C.card3,zIndex:1}}>
                     <tr><TH ch="#"/><TH ch="Customer"/><TH ch="Date"/><TH ch="Weight"/><TH ch="Rate"/><TH ch="Amount" right/><TH ch="Status"/></tr>
                   </thead>
@@ -4169,8 +4169,8 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                 <span style={{color:C.green}}>{importReceiptsPreview.filter(r=>r.saleFound&&r.amount>0).length} matched</span>
                 {importReceiptsPreview.filter(r=>!r.saleFound).length>0&&<span style={{color:C.red,marginLeft:10}}>{importReceiptsPreview.filter(r=>!r.saleFound).length} unmatched</span>}
               </div>
-              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",maxHeight:320,overflowY:"auto",marginBottom:14}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",maxHeight:320,overflowY:"auto",marginBottom:14}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead style={{position:"sticky",top:0,background:C.card3,zIndex:1}}>
                     <tr><TH ch="#"/><TH ch="Match (ReceiptNo/Customer)"/><TH ch="Date"/><TH ch="Amount"/><TH ch="Method"/><TH ch="Sale Balance"/><TH ch="Status"/></tr>
                   </thead>
@@ -4239,8 +4239,8 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
           ):(
             <>
               {batchItems.length>5&&<input placeholder="🔍  Filter added customers…" value={batchSearch} onChange={e=>setBatchSearch(e.target.value)} style={{marginBottom:10}}/>}
-              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden",maxHeight:360,overflowY:"auto"}}>
-                <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{border:`1px solid ${C.border}`,borderRadius:10,overflowX:"auto",WebkitOverflowScrolling:"touch",maxHeight:360,overflowY:"auto"}}>
+                <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                   <thead style={{position:"sticky",top:0,background:C.card3,zIndex:1}}><tr><TH ch="#"/><TH ch="Customer"/><TH ch="City"/><TH ch="Rate (Rs/kg)"/><TH ch="Weight (kg)"/><TH ch="Amount" right/><TH ch=""/></tr></thead>
                   <tbody>
                     {batchFiltered.map((r,i)=>{const amt=n(r.weight)*n(r.rate);return(
@@ -4418,7 +4418,7 @@ function PartnersPage({partners,setPartners,distributions,setDistributions,vehic
             <span style={{fontSize:12,fontWeight:700,color:C.muted}}>Distribution Progress</span>
             <span style={{fontSize:12,fontWeight:700,color:pct>=100?C.green:C.amber}}>{pct}% distributed</span>
           </div>
-          <div style={{background:C.card2,borderRadius:20,height:12,overflow:"hidden"}}>
+          <div style={{background:C.card2,borderRadius:20,height:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
             <div style={{width:pct+"%",height:"100%",background:pct>=100?C.green:C.amber,borderRadius:20,transition:"width 0.5s ease"}}/>
           </div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:11,color:C.muted}}>
@@ -4432,8 +4432,8 @@ function PartnersPage({partners,setPartners,distributions,setDistributions,vehic
         {myDists.length===0
           ?<Empty icon="💸" text="No distributions recorded yet"/>
           :(
-            <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-              <table style={{width:"100%",borderCollapse:"collapse"}}>
+            <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                 <thead><tr><TH ch="Date"/><TH ch="Period"/><TH ch="Method"/><TH ch="Notes"/><TH ch="Amount" right/></tr></thead>
                 <tbody>
                   {myDists.map(d=>(
@@ -4584,7 +4584,7 @@ function PartnersPage({partners,setPartners,distributions,setDistributions,vehic
                     ))}
                   </div>
                   {/* Progress bar */}
-                  <div style={{background:C.card2,borderRadius:20,height:6,overflow:"hidden"}}>
+                  <div style={{background:C.card2,borderRadius:20,height:6,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
                     <div style={{width:pct+"%",height:"100%",background:pct>=100?C.green:col,borderRadius:20,transition:"width 0.4s"}}/>
                   </div>
                   <div style={{display:"flex",justifyContent:"space-between",marginTop:4,fontSize:10,color:C.muted}}>
@@ -4602,8 +4602,8 @@ function PartnersPage({partners,setPartners,distributions,setDistributions,vehic
       {(distributions||[]).length>0&&(
         <div style={{marginTop:18}}>
           <div style={{fontSize:11,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>Recent Distributions</div>
-          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-            <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
               <thead><tr><TH ch="Date"/><TH ch="Partner"/><TH ch="Period"/><TH ch="Method"/><TH ch="Amount" right/></tr></thead>
               <tbody>
                 {[...(distributions||[])].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10).map(d=>(
@@ -4784,7 +4784,7 @@ Shukriya 🙏`
               <div className="mono" style={{fontSize:16,fontWeight:800,color:b.color,marginBottom:4}}>{fmtRs(tot.amount)}</div>
               <div style={{fontSize:11,color:C.muted}}>{tot.count} customers · {tot.invoices} invoices</div>
               {/* Mini bar */}
-              <div style={{marginTop:8,background:C.card2,borderRadius:20,height:4,overflow:"hidden"}}>
+              <div style={{marginTop:8,background:C.card2,borderRadius:20,height:4,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
                 <div style={{width:pct+"%",height:"100%",background:b.color,borderRadius:20}}/>
               </div>
             </div>
@@ -5075,9 +5075,9 @@ function CashFlowPage({accounts,transactions,vehicles}){
 
           {/* Per-account balances */}
           {accounts.length>0&&(
-            <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden",marginBottom:16}}>
+            <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch",marginBottom:16}}>
               <div style={{padding:"12px 16px",borderBottom:`1px solid ${C.border}`,fontSize:12,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:"0.05em"}}>🏦 Account Balances</div>
-              <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                 <thead><tr><TH ch="Account"/><TH ch="Type"/><TH ch="Opening" right/><TH ch="Movement" right/><TH ch="Closing" right/></tr></thead>
                 <tbody>
                   {accBalances.map(a=>(
@@ -5096,11 +5096,11 @@ function CashFlowPage({accounts,transactions,vehicles}){
 
           {/* Money In breakdown */}
           {inRows.length>0&&(
-            <div style={{background:C.card,border:`1px solid ${C.green}33`,borderRadius:12,overflow:"hidden",marginBottom:12}}>
+            <div style={{background:C.card,border:`1px solid ${C.green}33`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch",marginBottom:12}}>
               <div style={{padding:"12px 16px",borderBottom:`1px solid ${C.border}`,fontSize:12,fontWeight:700,color:C.green,textTransform:"uppercase",letterSpacing:"0.05em",display:"flex",justifyContent:"space-between"}}>
                 <span>💚 Money In</span><span className="mono">{fmtRs(totalDayIn)}</span>
               </div>
-              <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                 <thead><tr><TH ch="Description"/><TH ch="Type"/><TH ch="Amount" right/></tr></thead>
                 <tbody>
                   {inRows.map((r,i)=>(
@@ -5117,11 +5117,11 @@ function CashFlowPage({accounts,transactions,vehicles}){
 
           {/* Money Out breakdown */}
           {outRows.length>0&&(
-            <div style={{background:C.card,border:`1px solid ${C.red}33`,borderRadius:12,overflow:"hidden",marginBottom:12}}>
+            <div style={{background:C.card,border:`1px solid ${C.red}33`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch",marginBottom:12}}>
               <div style={{padding:"12px 16px",borderBottom:`1px solid ${C.border}`,fontSize:12,fontWeight:700,color:C.red,textTransform:"uppercase",letterSpacing:"0.05em",display:"flex",justifyContent:"space-between"}}>
                 <span>🔴 Money Out</span><span className="mono">{fmtRs(totalDayOut)}</span>
               </div>
-              <table style={{width:"100%",borderCollapse:"collapse"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
                 <thead><tr><TH ch="Description"/><TH ch="Type"/><TH ch="Amount" right/></tr></thead>
                 <tbody>
                   {outRows.map((r,i)=>(
@@ -5199,8 +5199,8 @@ function CashFlowPage({accounts,transactions,vehicles}){
           </div>
 
           {/* Daily breakdown table */}
-          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-            <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
               <thead><tr><TH ch="Date"/><TH ch="In" right/><TH ch="Out" right/><TH ch="Net" right/></tr></thead>
               <tbody>
                 {monthlyData.filter(d=>d.hasData).map(d=>(
@@ -5446,8 +5446,8 @@ function DriversPage({drivers,setDrivers,vehicles,setVehicles,transactions}){
         {/* Trip history table */}
         <div style={{fontSize:11,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>Trip History ({trips.length})</div>
         {trips.length===0?<Empty icon="🚛" text="No trips assigned yet"/>:(
-          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflow:"hidden"}}>
-            <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+            <table style={{width:"100%",borderCollapse:"collapse",minWidth:480}}>
               <thead><tr><TH ch="Vehicle"/><TH ch="Date"/><TH ch="Route"/><TH ch="Status"/><TH ch="P&L" right/></tr></thead>
               <tbody>
                 {trips.map(v=>{
