@@ -76,6 +76,24 @@ function loadXLSX(){
     document.head.appendChild(s);
   });
 }
+function saveXLSXFile(wb, filename) {
+  try {
+    window.saveXLSXFile(wb, filename);
+  } catch(e) {
+    try {
+      const wbout = window.XLSX.write(wb, {bookType:'xlsx', type:'array'});
+      const blob = new Blob([wbout], {type:'application/octet-stream'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+    } catch(e2) {
+      alert('Download not supported on this device. Please use a browser on PC to download templates.');
+    }
+  }
+}
+
 function loadJsPDF(){return new Promise(resolve=>{if(window.jspdf)return resolve(window.jspdf.jsPDF);const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";s.onload=()=>resolve(window.jspdf.jsPDF);document.head.appendChild(s);});}
 function loadHtml2Canvas(){return new Promise(resolve=>{if(window.html2canvas)return resolve(window.html2canvas);const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";s.onload=()=>resolve(window.html2canvas);document.head.appendChild(s);});}
 
@@ -1528,7 +1546,7 @@ function CustomersPage({customers,setCustomers}){
       ["Sana Poultry","0333-9876543","Quetta","Liaquat Road",415,0],
     ]);
     ws["!cols"]=[{wch:25},{wch:16},{wch:14},{wch:25},{wch:10},{wch:16}];
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Customers");XLSX.writeFile(wb,"customers_template.xlsx");
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Customers");saveXLSXFile(wb,"customers_template.xlsx");
   };
   const downloadBalTemplate=async()=>{
     const XLSX=await loadXLSX();
@@ -1538,7 +1556,7 @@ function CustomersPage({customers,setCustomers}){
       ["Sana Poultry",8500],
     ]);
     ws["!cols"]=[{wch:30},{wch:16}];
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"OpeningBalances");XLSX.writeFile(wb,"opening_balances_template.xlsx");
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"OpeningBalances");saveXLSXFile(wb,"opening_balances_template.xlsx");
   };
 
   const rateFiltered=useMemo(()=>customers.filter(c=>c.name.toLowerCase().includes(rateSearch.toLowerCase())||(c.city||"").toLowerCase().includes(rateSearch.toLowerCase())),[customers,rateSearch]);
@@ -3328,7 +3346,7 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
   const downloadSalesTemplate=async()=>{
     const XLSX=await loadXLSX();
     const ws=XLSX.utils.aoa_to_sheet([["CustomerName","Date","Weight","Rate","Notes"],["Ali Chicken Shop","2025-01-15","500","420","Sample sale"]]);
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Sales");XLSX.writeFile(wb,"sales_import_template.xlsx");
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Sales");saveXLSXFile(wb,"sales_import_template.xlsx");
   };
 
   // ── IMPORT RECEIPTS ──
@@ -3384,7 +3402,7 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
   const downloadReceiptsTemplate=async()=>{
     const XLSX=await loadXLSX();
     const ws=XLSX.utils.aoa_to_sheet([["ReceiptNo","CustomerName","Date","Amount","Method","Note"],["RCP-ABC123","Ali Chicken Shop","2025-01-20","50000","Cash","Partial payment"]]);
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Receipts");XLSX.writeFile(wb,"receipts_import_template.xlsx");
+    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Receipts");saveXLSXFile(wb,"receipts_import_template.xlsx");
   };
 
   const addPurchase=()=>{
@@ -5722,8 +5740,9 @@ function exportAllData(data) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const dateStr = new Date().toISOString().slice(0,10);
-  a.href = url; a.download = `ChickenFlow_Backup_${dateStr}.json`; a.click();
-  URL.revokeObjectURL(url);
+  a.href = url; a.download = `ChickenFlow_Backup_${dateStr}.json`;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
 }
 class ErrorBoundary extends React.Component {
   constructor(props) { super(props); this.state = { error: null }; }
