@@ -310,7 +310,7 @@ const css=`
   ::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px;}
   tr:hover>td{background:${C.card2}66;}
   .ci{padding:6px 10px !important;font-size:12px !important;border-radius:8px !important;}
-  .page-content{padding:16px;padding-bottom:calc(80px + env(safe-area-inset-bottom));max-width:1200px;margin:0 auto;}
+  .page-content{padding:16px;overflow-x:hidden;padding-bottom:calc(80px + env(safe-area-inset-bottom));max-width:1200px;margin:0 auto;}
   .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:${C.card};border-top:1px solid ${C.border};display:flex;align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom);height:calc(62px + env(safe-area-inset-bottom));}
   .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all 0.15s;min-height:44px;-webkit-tap-highlight-color:transparent;}
   .bottom-nav-item:active{background:${C.card2};}
@@ -1008,12 +1008,10 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
 
   return(
     <div>
-      <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",marginBottom:12}}>
-        <div>
-          <h1 style={{fontSize:22,fontWeight:800,marginBottom:4}}>👷 Salaries & Labour</h1>
-          <p style={{color:C.muted,fontSize:13}}>{labourers.length} labourers · Paid: {fmtRs(totalPaid)} · Advances: {fmtRs(totalAdvances)}</p>
-        </div>
-        <div style={{display:"flex",gap:8}}>
+      <div style={{marginBottom:12}}>
+        <h1 style={{fontSize:22,fontWeight:800,marginBottom:4}}>👷 Salaries & Labour</h1>
+        <p style={{color:C.muted,fontSize:13,marginBottom:10}}>{labourers.length} labourers · Paid: {fmtRs(totalPaid)} · Advances: {fmtRs(totalAdvances)}</p>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
           <Btn color="amber" onClick={()=>{setForm({date:today()});setModal("pay");}}>💸 Pay Salary</Btn>
           <Btn color="orange" onClick={()=>{setForm({date:today()});setModal("advance");}}>⚡ Pay Advance</Btn>
           <Btn color="ghost" onClick={()=>{setForm({joinDate:today()});setModal("add");}}>+ Add Labourer</Btn>
@@ -2977,7 +2975,6 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         </div>);
       })()}
 
-    {invoiceSale&&<InvoiceModal sale={invoiceSale} vehicleNo={vehicle.vehicleNo} onClose={()=>setInvoiceSale(null)}/>}
     </div>
   );
 }
