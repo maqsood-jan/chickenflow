@@ -5226,99 +5226,6 @@ function CashFlowPage({accounts,transactions,vehicles}){
   );
 }
 
-// ─── ROLE / AUTH SYSTEM ──────────────────────────────────────────────────────
-const ROLES={
-  owner:  {label:"👑 Owner",   color:"#F59E0B", pin:"1234", canDelete:true,  canVoid:true,  seeAll:true},
-  manager:{label:"📋 Manager", color:"#60A5FA", pin:"5678", canDelete:false, canVoid:false, seeAll:true},
-  driver: {label:"🚗 Driver",  color:"#2DD4BF", pin:"0000", canDelete:false, canVoid:false, seeAll:false},
-};
-
-function RoleLoginScreen({onLogin,theme}){
-  const [selRole,setSelRole]=React.useState("owner");
-  const [pin,setPin]=React.useState("");
-  const [err,setErr]=React.useState("");
-  const [showPin,setShowPin]=React.useState(false);
-
-  const tryLogin=()=>{
-    const role=ROLES[selRole];
-    if(pin===role.pin){ haptic("success"); onLogin(selRole); }
-    else{ setErr("Wrong PIN — try again"); setPin(""); haptic("error"); setTimeout(()=>setErr(""),2000); }
-  };
-
-  const bg=theme==="light"?"#F0F2F8":"#080B12";
-  const card=theme==="light"?"#FFFFFF":"#101420";
-  const text=theme==="light"?"#1A2035":"#D9E4F5";
-  const muted=theme==="light"?"#64748B":"#4E5E7A";
-  const border=theme==="light"?"#C8D0E8":"#232D42";
-
-  return(
-    <div style={{minHeight:"100dvh",background:bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24}}>
-      <div style={{fontSize:48,marginBottom:8}}>🐔</div>
-      <div style={{fontSize:24,fontWeight:900,color:"#F59E0B",marginBottom:4}}>ChickenFlow</div>
-      <div style={{fontSize:13,color:muted,marginBottom:32}}>Select your role to continue</div>
-
-      {/* Role selector */}
-      <div style={{display:"flex",flexDirection:"column",gap:10,width:"100%",maxWidth:320,marginBottom:24}}>
-        {Object.entries(ROLES).map(([k,r])=>(
-          <button key={k} onClick={()=>{setSelRole(k);setPin("");setErr("");haptic("light");}}
-            style={{padding:"14px 20px",borderRadius:14,border:`2px solid ${selRole===k?r.color:border}`,
-              background:selRole===k?r.color+"15":card,color:selRole===k?r.color:text,
-              fontSize:15,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:12,transition:"all 0.15s"}}>
-            <span style={{fontSize:22}}>{r.label.split(" ")[0]}</span>
-            <span>{r.label.split(" ").slice(1).join(" ")}</span>
-            {selRole===k&&<span style={{marginLeft:"auto",fontSize:11,opacity:0.7}}>Selected</span>}
-          </button>
-        ))}
-      </div>
-
-      {/* PIN entry */}
-      <div style={{width:"100%",maxWidth:320}}>
-        <div style={{fontSize:12,color:muted,fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.05em"}}>Enter PIN</div>
-        <div style={{position:"relative",marginBottom:8}}>
-          <input
-            type={showPin?"text":"password"} value={pin}
-            onChange={e=>setPin(e.target.value)} onKeyDown={e=>e.key==="Enter"&&tryLogin()}
-            placeholder="••••" maxLength={8}
-            style={{width:"100%",padding:"13px 44px 13px 16px",borderRadius:12,
-              border:`1.5px solid ${err?"#EF4444":border}`,background:card,color:text,
-              fontSize:20,fontFamily:"monospace",textAlign:"center",outline:"none",letterSpacing:6}}/>
-          <button onClick={()=>setShowPin(v=>!v)}
-            style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:18,color:muted}}>
-            {showPin?"🙈":"👁"}
-          </button>
-        </div>
-        {err&&<div style={{color:"#EF4444",fontSize:13,textAlign:"center",marginBottom:8}}>{err}</div>}
-
-        {/* Numpad */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>
-          {["1","2","3","4","5","6","7","8","9","","0","⌫"].map((k,i)=>(
-            <button key={i} onClick={()=>{
-              if(!k) return;
-              haptic("light");
-              if(k==="⌫") setPin(p=>p.slice(0,-1));
-              else if(pin.length<8) setPin(p=>p+k);
-            }}
-              style={{padding:"16px",borderRadius:12,border:`1px solid ${border}`,background:k?card:"transparent",
-                color:k==="⌫"?"#EF4444":text,fontSize:18,fontWeight:700,cursor:k?"pointer":"default",
-                opacity:k?1:0}}>
-              {k}
-            </button>
-          ))}
-        </div>
-
-        <button onClick={tryLogin}
-          style={{width:"100%",padding:"15px",borderRadius:14,background:"#F59E0B",color:"#fff",
-            fontSize:16,fontWeight:800,border:"none",cursor:"pointer",letterSpacing:"0.05em"}}>
-          LOGIN →
-        </button>
-        <div style={{textAlign:"center",fontSize:11,color:muted,marginTop:12}}>
-          Default PINs: Owner=1234 · Manager=5678 · Driver=0000
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─── FAB (Floating Action Button) ────────────────────────────────────────────
 function FAB({onClick,label="Add",icon="➕",color}){
   const col=color||C.amber;
@@ -5896,28 +5803,18 @@ function App({ uid, userEmail }) {
   const [showNotifications, setShowNotifications] = useState(false);
 
   // ── Theme (dark/light) ──
-  const [themeVersion,setThemeVersion] = useState(0); // increments to force re-render on theme change
-  const [theme,setTheme] = useState(()=>{
-    try{ return localStorage.getItem("cf_theme")||"dark"; }catch(e){ return "dark"; }
-  });
-  const toggleTheme=()=>{
-    setTheme(t=>{ const next=t==="dark"?"light":"dark"; try{localStorage.setItem("cf_theme",next);}catch(e){} haptic("light"); return next; });
-  };
+  const [theme,setTheme] = useState("dark");
+  const toggleTheme=()=>{ haptic("light"); setTheme(t=>t==="dark"?"light":"dark"); };
   // Apply theme palette globally (mutable C reference)
   // Apply theme palette — useEffect runs AFTER render, safe from React #310
   React.useEffect(()=>{
     Object.assign(C,THEMES[theme]);
     document.body.style.background=C.bg;
     document.body.style.color=C.text;
-    // Force update so components re-render with new colors
-    setThemeVersion(v=>v+1);
   },[theme]);
 
-  // ── Role / Auth ──
-  const [role,setRole] = useState(null); // null=not logged in
-  const roleObj = role?ROLES[role]:null;
-  const canDelete = roleObj?.canDelete ?? true;
-  const canVoid   = roleObj?.canVoid   ?? true;
+  const canDelete = true;
+  const canVoid   = true;
 
   const addTxn = txn => { haptic("success"); setTransactions(p => [...p, {id:genId(), ...txn}]); };
 
@@ -6142,9 +6039,6 @@ function App({ uid, userEmail }) {
     return () => clearTimeout(t);
   }, []);
 
-  // Show role login if not authenticated
-  if(!role) return <RoleLoginScreen onLogin={r=>{setRole(r);haptic("success");}} theme={theme}/>;
-
   if (!allLoaded && !forceShow) return <LoadingScreen />;
 
   const pageTitles = {
@@ -6193,13 +6087,7 @@ function App({ uid, userEmail }) {
           title={`Switch to ${theme==="dark"?"light":"dark"} mode`}>
           {theme==="dark"?"☀️":"🌙"}
         </button>}
-        {/* Role badge + logout */}
-        {!openVehicle&&<button onClick={()=>{if(window.confirm("Log out?")){ setRole(null); haptic("light"); }}}
-          style={{background:roleObj?.color+"22",border:`1px solid ${roleObj?.color}44`,
-            borderRadius:10,padding:"5px 10px",fontSize:11,fontWeight:700,
-            cursor:"pointer",color:roleObj?.color,whiteSpace:"nowrap"}}>
-          {roleObj?.label||""}
-        </button>}
+
         {!openVehicle&&<button onClick={()=>setShowGlobalSearch(true)}
           style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:8,padding:"5px 10px",fontSize:16,cursor:"pointer",color:C.muted,minHeight:36,display:"flex",alignItems:"center"}}>
           🔍
