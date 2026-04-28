@@ -3567,7 +3567,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                   <StatBox label="Paid" value={fmtRs(paid)} color={C.green}/>
                   <StatBox label="Balance" value={fmtRs(bal)} color={bal>0?C.red:C.green}/>
                 </div>
-                {p.payments?.length>0&&(<div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{p.payments.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.amber}>{r.method}</Tag></TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm(`Delete payment of ${fmtRs(r.amount)}?`))mut(v=>({...v,purchases:v.purchases.map(x=>x.id===p.id?{...x,payments:(x.payments||[]).filter(pay=>pay.id!==r.id)}:x)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table>)}
+                {p.payments?.length>0&&(<div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{p.payments.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.amber}>{r.method}</Tag></TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm(`Delete payment of ${fmtRs(r.amount)}?`))mut(v=>({...v,purchases:v.purchases.map(x=>x.id===p.id?{...x,payments:(x.payments||[]).filter(pay=>pay.id!==r.id)}:x)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table></div>)}
                 {vehicle.status==="active"&&bal>0&&<Btn color="amber" small onClick={()=>{setSelId(p.id);openModal("supplierpay");}}>+ Record Payment to Supplier</Btn>}
               </div>
             );
@@ -3613,7 +3613,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                   <StatBox label="Collected" value={fmtRs(collected)} color={C.green}/>
                   <StatBox label="Balance" value={fmtRs(saleBalance)} color={saleBalance>0?C.red:C.green}/>
                 </div>
-                {(sale.receipts||[]).length>0&&(<div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Acct","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{sale.receipts.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.blue}>{r.method||"Cash"}</Tag></TD><TD color={C.muted}>{r.accountName||"—"}</TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm("Delete this receipt?"))mut(v=>({...v,sales:v.sales.map(s=>s.id===sale.id?{...s,receipts:(s.receipts||[]).filter(x=>x.id!==r.id)}:s)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table>)}
+                {(sale.receipts||[]).length>0&&(<div style={{overflowX:"auto",WebkitOverflowScrolling:"touch",borderRadius:10,border:`1px solid ${C.border}`}}><table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}><thead><tr>{["Date","Amount","Method","Acct","Note",""].map(h=><TH key={h} ch={h}/>)}</tr></thead><tbody>{sale.receipts.map(r=><tr key={r.id}><TD color={C.muted}>{r.date}</TD><TD color={C.green} mono bold>{fmtRs(r.amount)}</TD><TD><Tag color={C.blue}>{r.method||"Cash"}</Tag></TD><TD color={C.muted}>{r.accountName||"—"}</TD><TD color={C.muted}>{r.note||"—"}</TD><TD><button onClick={()=>{if(window.confirm("Delete this receipt?"))mut(v=>({...v,sales:v.sales.map(s=>s.id===sale.id?{...s,receipts:(s.receipts||[]).filter(x=>x.id!==r.id)}:s)}));}} style={{background:"transparent",color:C.red,border:"none",fontSize:13,cursor:"pointer",padding:"2px 6px"}}>🗑</button></TD></tr>)}</tbody></table></div>)}
                 <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
                   {saleBalance>0&&<Btn color="green" small onClick={()=>{setSelId(sale.id);openModal("receipt");}}>+ Add Receipt</Btn>}
                   <button onClick={()=>setInvoiceSale(sale)} style={{background:C.blueSoft,color:C.blue,border:`1px solid ${C.blue}33`,borderRadius:6,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer"}}>📄 Invoice</button>
@@ -3969,7 +3969,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                </table></div>
               </div>
             )}
 
@@ -5090,7 +5090,7 @@ function CashFlowPage({accounts,transactions,vehicles}){
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </table></div>
             </div>
           )}
 
