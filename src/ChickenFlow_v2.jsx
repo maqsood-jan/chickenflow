@@ -309,7 +309,7 @@ const css=`
   ::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px;}
   tr:hover>td{background:${C.card2}66;}
   .ci{padding:6px 10px !important;font-size:12px !important;border-radius:8px !important;}
-  .page-content{padding:12px;overflow-x:hidden;box-sizing:border-box;width:100%;padding-bottom:calc(120px + env(safe-area-inset-bottom));}
+  .page-content{padding:12px;overflow-x:hidden;box-sizing:border-box;width:100%;padding-bottom:calc(160px + env(safe-area-inset-bottom));}
   .top-header{background:${C.card};border-bottom:1px solid ${C.border};padding:0 10px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:99;gap:6px;padding-top:env(safe-area-inset-top);overflow:hidden;}
   .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:${C.card};border-top:1px solid ${C.border};display:flex;align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom);height:calc(60px + env(safe-area-inset-bottom));}
   .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px;cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
@@ -3516,7 +3516,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
       </div>
 
       {tab==="overview"&&(
-        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,paddingBottom:24}}>
           <InfoCard title="Inventory Status">
             <Row2 label="Purchased" value={fmtKg(c.purchased)}/><Row2 label="Transit Loss" value={fmtKg(c.transitLoss)} color={C.red}/>
             <Row2 label="Received" value={fmtKg(c.received)} color={C.blue} bold/><Row2 label="Sold" value={fmtKg(c.soldWt)} color={C.green}/>
@@ -3545,7 +3545,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
       )}
 
       {tab==="purchases"&&(
-        <div>
+        <div style={{paddingBottom:24}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
             <h2 style={{fontSize:16,fontWeight:700}}>Purchases <span style={{color:C.muted,fontWeight:400}}>({vehicle.purchases.length})</span></h2>
             {vehicle.status==="active"&&<Btn onClick={()=>openModal("purchase")}>+ Add Purchase</Btn>}
@@ -3577,7 +3577,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
       )}
 
       {tab==="sales"&&(
-        <div>
+        <div style={{paddingBottom:24}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
             <h2 style={{fontSize:16,fontWeight:700}}>Sales <span style={{color:C.muted,fontWeight:400}}>({vehicle.sales.length})</span></h2>
           {vehicle.status==="active"&&<div style={{display:"flex",gap:8}}>
@@ -3651,7 +3651,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
         const totalOut=outTransfers.reduce((s,t)=>s+n(t.weight),0);
         const totalIn=inTransfers.reduce((s,t)=>s+n(t.weight),0);
         return(
-          <div>
+          <div style={{paddingBottom:24}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
               <h2 style={{fontSize:16,fontWeight:700}}>🚛 Stock Transfers</h2>
               {vehicle.status==="active"&&<Btn onClick={()=>{setForm({date:today()});openModal("transfer");}}>+ New Transfer</Btn>}
@@ -3742,7 +3742,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
       })()}
 
       {tab==="expenses"&&(
-        <div>
+        <div style={{paddingBottom:24}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
             <h2 style={{fontSize:16,fontWeight:700}}>Expenses</h2>
             {vehicle.status==="active"&&<Btn onClick={()=>openModal("expense")}>+ Add Expense</Btn>}
@@ -3837,7 +3837,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
         const donutGradient=`conic-gradient(${C.amber} 0% ${purchPct}%, ${C.red} ${purchPct}% ${purchPct+vehPct}%, ${C.orange} ${purchPct+vehPct}% 100%)`;
 
         return(
-          <div>
+          <div style={{paddingBottom:24}}>
             {/* ── TOP KPI CARDS ── */}
             <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
               <div style={{background:C.card,border:`1px solid ${c.pnl>=0?C.green:C.red}44`,borderRadius:12,padding:"14px 16px",gridColumn:"1/-1"}}>
