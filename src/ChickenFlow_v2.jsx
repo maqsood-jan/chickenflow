@@ -1538,25 +1538,23 @@ function CustomersPage({customers,setCustomers}){
     setBalImportPreview([]);setBalImportError("");setModal(null);
   };
 
-  const downloadTemplate=async()=>{
-    const XLSX=await loadXLSX();
-    const ws=XLSX.utils.aoa_to_sheet([
-      ["Name","Phone","City","Address","Rate","Opening Balance"],
-      ["Ali Chicken Shop","0300-1234567","Khuzdar","Main Bazar",420,15000],
-      ["Sana Poultry","0333-9876543","Quetta","Liaquat Road",415,0],
-    ]);
-    ws["!cols"]=[{wch:25},{wch:16},{wch:14},{wch:25},{wch:10},{wch:16}];
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Customers");saveXLSXFile(wb,"customers_template.xlsx");
+  const downloadTemplate=()=>{
+    const csv="Name,Phone,City,Address,Rate,Opening Balance\nAli Chicken Shop,0300-1234567,Khuzdar,Main Bazar,420,15000\nSana Poultry,0333-9876543,Quetta,Liaquat Road,415,0";
+    const blob=new Blob([csv],{type:"text/csv"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download="customers_template.csv";
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
   };
-  const downloadBalTemplate=async()=>{
-    const XLSX=await loadXLSX();
-    const ws=XLSX.utils.aoa_to_sheet([
-      ["Name","Opening Balance"],
-      ["Ali Chicken Shop",15000],
-      ["Sana Poultry",8500],
-    ]);
-    ws["!cols"]=[{wch:30},{wch:16}];
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"OpeningBalances");saveXLSXFile(wb,"opening_balances_template.xlsx");
+  const downloadBalTemplate=()=>{
+    const csv="Name,Opening Balance\nAli Chicken Shop,15000\nSana Poultry,8500";
+    const blob=new Blob([csv],{type:"text/csv"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download="opening_balances_template.csv";
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
   };
 
   const rateFiltered=useMemo(()=>customers.filter(c=>c.name.toLowerCase().includes(rateSearch.toLowerCase())||(c.city||"").toLowerCase().includes(rateSearch.toLowerCase())),[customers,rateSearch]);
@@ -3343,10 +3341,14 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
     closeModal();
     alert(`\u2705 ${newSales.length} sales imported successfully!`);
   };
-  const downloadSalesTemplate=async()=>{
-    const XLSX=await loadXLSX();
-    const ws=XLSX.utils.aoa_to_sheet([["CustomerName","Date","Weight","Rate","Notes"],["Ali Chicken Shop","2025-01-15","500","420","Sample sale"]]);
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Sales");saveXLSXFile(wb,"sales_import_template.xlsx");
+  const downloadSalesTemplate=()=>{
+    const csv="CustomerName,Date,Weight,Rate,Notes\nAli Chicken Shop,2025-01-15,500,420,Sample sale";
+    const blob=new Blob([csv],{type:"text/csv"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download="sales_import_template.csv";
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
   };
 
   // ── IMPORT RECEIPTS ──
@@ -3399,10 +3401,14 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
     closeModal();
     alert(`\u2705 ${valid.length} receipts imported successfully!`);
   };
-  const downloadReceiptsTemplate=async()=>{
-    const XLSX=await loadXLSX();
-    const ws=XLSX.utils.aoa_to_sheet([["ReceiptNo","CustomerName","Date","Amount","Method","Note"],["RCP-ABC123","Ali Chicken Shop","2025-01-20","50000","Cash","Partial payment"]]);
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Receipts");saveXLSXFile(wb,"receipts_import_template.xlsx");
+  const downloadReceiptsTemplate=()=>{
+    const csv="ReceiptNo,CustomerName,Date,Amount,Method,Note\nRCP-ABC123,Ali Chicken Shop,2025-01-20,50000,Cash,Partial payment";
+    const blob=new Blob([csv],{type:"text/csv"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download="receipts_import_template.csv";
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
   };
 
   const addPurchase=()=>{
