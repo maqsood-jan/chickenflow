@@ -322,10 +322,10 @@ const TD=({children,color,bold,mono,right,small})=>(
     textAlign:right?"right":"left"}}>{children}</td>
 );
 const StatBox=({label,value,color,sub})=>(
-  <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:12,padding:"12px 10px"}}>
-    <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{label}</div>
-    <div className="mono" style={{fontSize:15,fontWeight:700,color:color||C.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{value}</div>
-    {sub&&<div style={{fontSize:10,color:C.muted,marginTop:2}}>{sub}</div>}
+  <div style={{background:C.card2,border:`1px solid ${C.border}`,borderRadius:12,padding:"10px 8px"}}>
+    <div style={{fontSize:9,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.04em",marginBottom:3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{label}</div>
+    <div className="mono" style={{fontSize:13,fontWeight:700,color:color||C.text,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{value}</div>
+    {sub&&<div style={{fontSize:9,color:C.muted,marginTop:2}}>{sub}</div>}
   </div>
 );
 const InfoCard=({title,children,action})=>(
@@ -583,7 +583,7 @@ function AccountsPage({accounts,setAccounts,transactions,setTransactions,expense
 
   return(
     <div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20}}>
+      <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",marginBottom:12}}>
         <div><h1 style={{fontSize:22,fontWeight:800,marginBottom:4}}>💰 Accounts & Ledger</h1>
           <p style={{color:C.muted,fontSize:13}}>Total Balance: <span className="mono" style={{color:totalBalance>=0?C.green:C.red,fontWeight:700}}>{fmtRs(totalBalance)}</span></p>
         </div>
@@ -595,7 +595,7 @@ function AccountsPage({accounts,setAccounts,transactions,setTransactions,expense
           <Btn color="amber"  onClick={()=>{setForm({type:"bank"});setModal("addAccount");}}>+ Add Account</Btn>
         </div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:14,marginBottom:24}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
         <div onClick={()=>setSelAccId("all")} style={{background:C.card,border:`2px solid ${selAccId==="all"?C.amber:C.border}`,borderRadius:12,padding:18,cursor:"pointer"}}>
           <div style={{fontSize:11,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:8}}>All Accounts</div>
           <div className="mono" style={{fontSize:22,fontWeight:800,color:totalBalance>=0?C.green:C.red}}>{fmtRs(totalBalance)}</div>
@@ -809,7 +809,7 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
 
   return(
     <div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20}}>
+      <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",marginBottom:12}}>
         <div>
           <h1 style={{fontSize:22,fontWeight:800,marginBottom:4}}>👷 Salaries & Labour</h1>
           <p style={{color:C.muted,fontSize:13}}>{labourers.length} labourers · Paid: {fmtRs(totalPaid)} · Advances: {fmtRs(totalAdvances)}</p>
@@ -847,7 +847,7 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
             return (
               <div>
                 {/* Stats */}
-                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:14,marginBottom:20}}>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
                   <StatBox label="Current Monthly Salary" value={fmtRs(currentRate)} color={C.amber}/>
                   <StatBox label="Total Earned (lifetime)" value={fmtRs(earned.earned)} color={C.blue}/>
                   <StatBox label="This Month Earned" value={fmtRs(monthEarned)} color={C.teal}/>
@@ -1250,7 +1250,7 @@ function CustomersPage({customers,setCustomers}){
 
   return(
     <div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20}}>
+      <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",marginBottom:12}}>
         <div>
           <h1 style={{fontSize:22,fontWeight:800,marginBottom:4}}>👤 Customers</h1>
           <p style={{color:C.muted,fontSize:13}}>
@@ -1259,12 +1259,13 @@ function CustomersPage({customers,setCustomers}){
           </p>
         </div>
         <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"flex-end"}}>
-          <Btn color="ghost" onClick={downloadTemplate}>⬇ Template</Btn>
-          <Btn color="blue" onClick={()=>setModal("import")}>📥 Import Excel</Btn>
-          <Btn color="orange" onClick={()=>setModal("importBal")}>📥 Import Balances</Btn>
-          <Btn color="teal" onClick={openBatchBalance}>💰 Update Balances</Btn>
-          <Btn color="purple" onClick={openBatchRate}>✏️ Update Rates</Btn>
-          <Btn color="amber" onClick={()=>{setForm({});setModal("add");}}>+ Add Customer</Btn>
+          <Btn color="amber" full onClick={()=>{setForm({});setModal("add");}}>+ Add Customer</Btn>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <Btn color="ghost" onClick={downloadTemplate}>⬇ Template</Btn>
+            <Btn color="blue" onClick={()=>setModal("import")}>📥 Import</Btn>
+            <Btn color="teal" onClick={openBatchBalance}>💰 Balances</Btn>
+            <Btn color="purple" onClick={openBatchRate}>✏️ Rates</Btn>
+          </div>
         </div>
       </div>
       <div style={{marginBottom:14}}><input placeholder="🔍  Search by name or city…" value={search} onChange={e=>setSearch(e.target.value)} style={{maxWidth:340}}/></div>
@@ -1588,7 +1589,7 @@ function BatchReceiptPage({vehicles,setVehicles,customers,accounts,labourers,add
           </Fld>
         )}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:14,marginBottom:20}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
         <StatBox label="Customers with Pending" value={allRows.length} color={C.amber}/>
         <StatBox label="Total Pending" value={fmtRs(allRows.reduce((s,r)=>s+r.pendingAmount,0))} color={C.red}/>
         <StatBox label="Amount Entered" value={fmtRs(totalMergedAmt)} color={mergedWithAmt.length>0?C.green:C.muted}/>
@@ -1774,12 +1775,11 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
 
   return(
     <div>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20}}>
-        <div><h1 style={{fontSize:22,fontWeight:800,marginBottom:4}}>📋 Reports</h1><p style={{color:C.muted,fontSize:13}}>View and print business reports</p></div>
-        <Btn color="ghost" onClick={()=>window.print()}>🖨 Print</Btn>
+      <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",marginBottom:12}}>
+        <Btn color="ghost" small onClick={()=>window.print()}>🖨 Print</Btn>
       </div>
       <div style={{display:"flex",gap:2,marginBottom:24,background:C.card,padding:4,borderRadius:10,border:`1px solid ${C.border}`,width:"fit-content"}} className="no-print">
-        {TABS.map(t=>(<button key={t} onClick={()=>setTab(t)} style={{padding:"7px 18px",borderRadius:7,background:tab===t?C.amber:"transparent",color:tab===t?"#000":C.muted,border:"none",fontWeight:tab===t?700:500,fontSize:13}}>{TAB_LABELS[t]}</button>))}
+        {TABS.map(t=>(<button key={t} onClick={()=>setTab(t)} style={{padding:"8px 16px",borderRadius:20,background:tab===t?C.amber:"transparent",color:tab===t?"#000":C.muted,border:tab===t?"none":`1px solid ${C.border}`,fontWeight:tab===t?700:500,fontSize:12,whiteSpace:"nowrap",minHeight:36,flexShrink:0}}>{TAB_LABELS[t]}</button>))}
       </div>
 
       {/* ── SALE REPORT ── */}
@@ -1807,7 +1807,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               {fromDate} → {toDate}
               {salesCustFilter&&custInfo&&<span style={{marginLeft:8,background:C.amberSoft,color:C.amber,padding:"2px 10px",borderRadius:10,fontSize:12,fontWeight:700}}>👤 {customers.find(c=>c.id===salesCustFilter)?.name}</span>}
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:20}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
               <StatBox label="Total Sales" value={salesInRange.length} color={C.amber}/>
               <StatBox label="Total Weight" value={fmtKg(salesWt)} color={C.blue}/>
               <StatBox label="Total Value" value={fmtRs(salesTotal)} color={C.green}/>
@@ -1855,7 +1855,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               {fromDate} → {toDate}
               {receiptsCustFilter&&<span style={{marginLeft:8,background:C.amberSoft,color:C.amber,padding:"2px 10px",borderRadius:10,fontSize:12,fontWeight:700}}>👤 {customers.find(c=>c.id===receiptsCustFilter)?.name}</span>}
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:14,marginBottom:20}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
               <StatBox label="Total Receipts" value={receiptsInRange.length} color={C.amber}/>
               <StatBox label="Total Collected" value={fmtRs(receiptsTotal)} color={C.green}/>
               <StatBox label="Unique Customers" value={new Set(receiptsInRange.map(r=>r.customerId)).size} color={C.blue}/>
@@ -1930,7 +1930,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               </div>
 
               {/* Summary stat boxes */}
-              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14,marginBottom:20}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
                 {custInfo?.openingBalance>0&&<StatBox label="Opening Balance" value={fmtRs(custOpeningBal)} color={C.orange}/>}
                 <StatBox label="Total Sales" value={fmtRs(custSalesTotal)} color={C.amber}/>
                 <StatBox label="Total Received" value={fmtRs(custReceiptsTotal)} color={C.green}/>
@@ -2044,7 +2044,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
                 <div><div style={{fontSize:20,fontWeight:800,marginBottom:4}}>🏭 {supInfo?.name}</div><div style={{color:C.muted,fontSize:13}}>{supInfo?.city||""} · {supInfo?.region||""}</div></div>
                 <div style={{textAlign:"right"}}><div style={{fontSize:12,color:C.muted,marginBottom:4}}>NET BALANCE</div><div className="mono" style={{fontSize:28,fontWeight:800,color:supBalance>0?C.red:C.green}}>{fmtRs(Math.abs(supBalance))}</div><div style={{fontSize:12,color:C.muted}}>{supBalance>0?"Payable":"Fully Paid"}</div></div>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:14,marginBottom:20}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
                 <StatBox label="Total Purchases" value={fmtRs(supPurchaseTotal)} color={C.amber}/>
                 <StatBox label="Total Paid" value={fmtRs(supPaidTotal)} color={C.green}/>
                 <StatBox label="Balance Due" value={fmtRs(supBalance)} color={supBalance>0?C.red:C.green}/>
@@ -2086,7 +2086,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         const totalDue=rows.reduce((s,r)=>s+r.due,0);
         const daysDiff=d=>Math.round((new Date()-new Date(d))/(864e5));
         return(<div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:14,marginBottom:20}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
             <StatBox label="Customers with Balance" value={rows.length} color={C.amber}/>
             <StatBox label="Total Receivable" value={fmtRs(totalDue)} color={C.red}/>
           </div>
@@ -2136,7 +2136,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         const totCost=rows.reduce((s,r)=>s+r.cost,0);
         const totPnl=rows.reduce((s,r)=>s+r.pnl,0);
         return(<div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:14,marginBottom:20}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
             <StatBox label="Total Revenue" value={fmtRs(totRev)} color={C.green}/>
             <StatBox label="Total Cost" value={fmtRs(totCost)} color={C.red}/>
             <StatBox label="Net Profit/Loss" value={fmtRs(Math.abs(totPnl))} color={totPnl>=0?C.green:C.red} sub={totPnl>=0?"Profit":"Loss"}/>
@@ -2166,7 +2166,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         }));
         const BCOLORS={"0–15 days":C.green,"16–30 days":C.amber,"31–60 days":C.orange,"60+ days":C.red};
         return(<div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10}}>
             {Object.entries(buckets).map(([bucket,items])=>(
               <div key={bucket} style={{background:C.card,border:`2px solid ${BCOLORS[bucket]}44`,borderRadius:12,padding:16}}>
                 <div style={{fontWeight:700,color:BCOLORS[bucket],marginBottom:4}}>{bucket}</div>
@@ -2468,7 +2468,7 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
           </div>
         )}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(120px,1fr))",gap:10,marginBottom:20}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
         <StatBox label="Purchased" value={fmtKg(c.purchased)} color={C.blue}/>
         <StatBox label="Transit Loss" value={fmtKg(c.transitLoss)} color={C.red}/>
         <StatBox label="Received" value={fmtKg(c.received)} color={C.amber}/>
@@ -2476,8 +2476,8 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
         <StatBox label="Transferred" value={fmtKg(c.transferWt)} color={C.purple}/>
         <StatBox label="Remaining" value={fmtKg(c.remaining)} color={c.remaining>0?C.green:C.muted}/>
       </div>
-      <div style={{display:"flex",gap:2,marginBottom:20,background:C.card,padding:4,borderRadius:10,border:`1px solid ${C.border}`,width:"fit-content"}}>
-        {TABS.map(t=>(<button key={t} onClick={()=>setTab(t)} style={{padding:"6px 16px",borderRadius:7,background:tab===t?C.amber:"transparent",color:tab===t?"#000":C.muted,border:"none",fontWeight:tab===t?700:500,textTransform:"uppercase",fontSize:11,letterSpacing:"0.05em"}}>{t}</button>))}
+      <div style={{display:"flex",gap:6,marginBottom:16,overflowX:"auto",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",padding:"2px 0"}}>
+        {TABS.map(t=>(<button key={t} onClick={()=>setTab(t)} style={{padding:"8px 14px",borderRadius:20,flexShrink:0,background:tab===t?C.amber:C.card,color:tab===t?"#000":C.muted,border:`1px solid ${tab===t?C.amber:C.border}`,fontWeight:tab===t?700:500,textTransform:"uppercase",fontSize:11,whiteSpace:"nowrap",minHeight:36}}>{t}</button>))}
       </div>
 
       {tab==="overview"&&(
@@ -2542,9 +2542,12 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
             <h2 style={{fontSize:16,fontWeight:700}}>Sales <span style={{color:C.muted,fontWeight:400}}>({vehicle.sales.length})</span></h2>
           {vehicle.status==="active"&&<div style={{display:"flex",gap:8}}>
-            <Btn color="blue" small onClick={()=>{setImportReceiptsPreview([]);setImportReceiptsError("");setImportReceiptsAccountId("");setModal("importReceipts");}}>📥 Import Receipts</Btn>
-            <Btn color="purple" small onClick={()=>{setImportSalesPreview([]);setImportSalesError("");setModal("importSales");}}>📥 Import Sales</Btn>
-            <Btn color="green" onClick={openBatchSale}>⚡ Batch Sale</Btn><Btn color="amber" onClick={()=>openModal("sale")}>+ Single Sale</Btn>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,width:"100%"}}>
+              <Btn color="blue" small onClick={()=>{setImportReceiptsPreview([]);setImportReceiptsError("");setImportReceiptsAccountId("");setModal("importReceipts");}}>📥 Receipts</Btn>
+              <Btn color="purple" small onClick={()=>{setImportSalesPreview([]);setImportSalesError("");setModal("importSales");}}>📥 Import</Btn>
+              <Btn color="green" onClick={openBatchSale}>⚡ Batch</Btn>
+              <Btn color="amber" onClick={()=>openModal("sale")}>+ Single</Btn>
+            </div>
           </div>}
           </div>
           {vehicle.sales.length>0&&(
