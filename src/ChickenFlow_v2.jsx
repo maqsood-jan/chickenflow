@@ -233,7 +233,9 @@ const THEMES={
     orange:"#EA580C",orangeSoft:"#EA580C15",
   },
 };
-let C=THEMES.dark;  // overwritten at runtime by useTheme()
+// C is initialized from stored theme preference immediately (before first render)
+const _storedTheme=(()=>{ try{ return localStorage.getItem("cf_theme")||"dark"; }catch(e){ return "dark"; } })();
+let C=Object.assign({},THEMES[_storedTheme]||THEMES.dark);
 
 // ── Haptic feedback ───────────────────────────────────────────
 function haptic(type="light"){
@@ -5278,7 +5280,7 @@ function RoleLoginScreen({onLogin,theme}){
             onChange={e=>setPin(e.target.value)} onKeyDown={e=>e.key==="Enter"&&tryLogin()}
             placeholder="••••" maxLength={8}
             style={{width:"100%",padding:"13px 44px 13px 16px",borderRadius:12,
-              border:`1.5px solid ${err?C.red:border}`,background:card,color:text,
+              border:`1.5px solid ${err?"#EF4444":border}`,background:card,color:text,
               fontSize:20,fontFamily:"monospace",textAlign:"center",outline:"none",letterSpacing:6}}/>
           <button onClick={()=>setShowPin(v=>!v)}
             style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:18,color:muted}}>
@@ -5894,6 +5896,7 @@ function App({ uid, userEmail }) {
   const [showNotifications, setShowNotifications] = useState(false);
 
   // ── Theme (dark/light) ──
+  const [themeVersion,setThemeVersion] = useState(0); // increments to force re-render on theme change
   const [theme,setTheme] = useState(()=>{
     try{ return localStorage.getItem("cf_theme")||"dark"; }catch(e){ return "dark"; }
   });
@@ -5901,9 +5904,14 @@ function App({ uid, userEmail }) {
     setTheme(t=>{ const next=t==="dark"?"light":"dark"; try{localStorage.setItem("cf_theme",next);}catch(e){} haptic("light"); return next; });
   };
   // Apply theme palette globally (mutable C reference)
-  React.useMemo(()=>{ Object.assign(C,THEMES[theme]); },[theme]);
-  // Apply body background
-  React.useEffect(()=>{ document.body.style.background=C.bg; document.body.style.color=C.text; },[theme]);
+  // Apply theme palette — useEffect runs AFTER render, safe from React #310
+  React.useEffect(()=>{
+    Object.assign(C,THEMES[theme]);
+    document.body.style.background=C.bg;
+    document.body.style.color=C.text;
+    // Force update so components re-render with new colors
+    setThemeVersion(v=>v+1);
+  },[theme]);
 
   // ── Role / Auth ──
   const [role,setRole] = useState(null); // null=not logged in
