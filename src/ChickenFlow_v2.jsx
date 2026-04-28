@@ -309,7 +309,7 @@ const css=`
   ::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px;}
   tr:hover>td{background:${C.card2}66;}
   .ci{padding:6px 10px !important;font-size:12px !important;border-radius:8px !important;}
-  .page-content{padding:12px;overflow-x:hidden;box-sizing:border-box;width:100%;padding-bottom:calc(76px + env(safe-area-inset-bottom));}
+  .page-content{padding:12px;overflow-x:hidden;box-sizing:border-box;width:100%;padding-bottom:calc(120px + env(safe-area-inset-bottom));}
   .top-header{background:${C.card};border-bottom:1px solid ${C.border};padding:0 10px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:99;gap:6px;padding-top:env(safe-area-inset-top);overflow:hidden;}
   .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:${C.card};border-top:1px solid ${C.border};display:flex;align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom);height:calc(60px + env(safe-area-inset-bottom));}
   .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px;cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
@@ -334,6 +334,7 @@ const css=`
     h1{font-size:18px !important;}
     h2{font-size:16px !important;}
     .page-content{padding:10px;}
+    .overview-grid{grid-template-columns:1fr !important;}
   }
   @media(max-width:360px){
     .form-row>*{min-width:100%;flex:0 0 100%;}
@@ -389,10 +390,10 @@ const Fld=({label,children,half,third,sx={}})=>(
   </div>
 );
 const Row2=({label,value,color,bold,border=true})=>(
-  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",
+  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",gap:4,
     borderBottom:border?`1px solid ${C.border}33`:"none"}}>
-    <span style={{fontSize:13,color:C.muted}}>{label}</span>
-    <span className="mono" style={{fontSize:13,color:color||C.text,fontWeight:bold?"700":"500"}}>{value}</span>
+    <span style={{fontSize:11,color:C.muted,flexShrink:0}}>{label}</span>
+    <span className="mono" style={{fontSize:12,color:color||C.text,fontWeight:bold?"700":"500",textAlign:"right",minWidth:0,wordBreak:"break-all"}}>{value}</span>
   </div>
 );
 const TH=({ch,right})=>(
@@ -412,7 +413,7 @@ const StatBox=({label,value,color,sub})=>(
   </div>
 );
 const InfoCard=({title,children,action})=>(
-  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:16,height:"fit-content"}}>
+  <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:12,height:"fit-content",minWidth:0,overflow:"hidden"}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
       <Label>{title}</Label>{action}
     </div>{children}
@@ -2747,7 +2748,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               </div>
 
               {/* Net Balance footer */}
-              <div style={{background:custNetBalance>0?C.redSoft:C.greenSoft,border:`1px solid ${custNetBalance>0?C.red:C.green}33`,borderRadius:10,padding:"14px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10}}>
+              <div style={{background:custNetBalance>0?C.redSoft:C.greenSoft,border:`1px solid ${custNetBalance>0?C.red:C.green}33`,borderRadius:10,padding:"14px 18px",marginBottom:20,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10}}>
                 <div style={{fontWeight:700,fontSize:14,color:custNetBalance>0?C.red:C.green}}>NET BALANCE (Overall)</div>
                 <div style={{display:"flex",alignItems:"center",gap:16}}>
                   {custOpeningBal>0&&<span style={{fontSize:12,color:C.orange}}>Opening: {fmtRs(custOpeningBal)}</span>}
@@ -2962,7 +2963,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         }));
         const BCOLORS={"0–15 days":C.green,"16–30 days":C.amber,"31–60 days":C.orange,"60+ days":C.red};
         return(<div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10}}>
+          <div className="overview-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10}}>
             {Object.entries(buckets).map(([bucket,items])=>(
               <div key={bucket} style={{background:C.card,border:`2px solid ${BCOLORS[bucket]}44`,borderRadius:12,padding:16}}>
                 <div style={{fontWeight:700,color:BCOLORS[bucket],marginBottom:4}}>{bucket}</div>
@@ -3515,7 +3516,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
       </div>
 
       {tab==="overview"&&(
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10}}>
           <InfoCard title="Inventory Status">
             <Row2 label="Purchased" value={fmtKg(c.purchased)}/><Row2 label="Transit Loss" value={fmtKg(c.transitLoss)} color={C.red}/>
             <Row2 label="Received" value={fmtKg(c.received)} color={C.blue} bold/><Row2 label="Sold" value={fmtKg(c.soldWt)} color={C.green}/>
