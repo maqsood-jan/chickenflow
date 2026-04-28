@@ -293,53 +293,58 @@ const css=`
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;overscroll-behavior:none;}
-  body{background:${C.bg};color:${C.text};font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;}
+  body{background:${C.bg};color:${C.text};font-family:'Plus Jakarta Sans',sans-serif;min-height:100dvh;-webkit-tap-highlight-color:transparent;transition:background 0.3s,color 0.3s;}
   input,select,textarea{background:${C.card2};border:1.5px solid ${C.border};color:${C.text};padding:10px 12px;border-radius:10px;font-family:inherit;font-size:16px;width:100%;outline:none;transition:border-color 0.15s;-webkit-appearance:none;appearance:none;}
   input:focus,select:focus,textarea:focus{border-color:${C.amber};}
   input::placeholder,textarea::placeholder{color:${C.muted};}
   select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234E5E7A' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
   select option{background:${C.card2};}
-  button{cursor:pointer;font-family:inherit;border:none;border-radius:10px;font-size:14px;font-weight:600;padding:10px 18px;transition:all 0.15s;min-height:44px;-webkit-tap-highlight-color:transparent;}
+  button{cursor:pointer;font-family:inherit;border:none;border-radius:10px;font-size:14px;font-weight:600;padding:10px 16px;transition:all 0.15s;min-height:44px;-webkit-tap-highlight-color:transparent;}
   button:active{opacity:0.75;transform:scale(0.97);}
   .mono{font-family:'JetBrains Mono',monospace;}
   @keyframes spin{to{transform:rotate(360deg)}}
-  body{transition:background 0.3s,color 0.3s;}
   *{-webkit-tap-highlight-color:transparent;}
   ::-webkit-scrollbar{width:4px;height:4px;}
   ::-webkit-scrollbar-track{background:${C.bg};}
   ::-webkit-scrollbar-thumb{background:${C.border};border-radius:3px;}
   tr:hover>td{background:${C.card2}66;}
   .ci{padding:6px 10px !important;font-size:12px !important;border-radius:8px !important;}
-  .page-content{padding:16px;overflow-x:hidden;padding-bottom:calc(80px + env(safe-area-inset-bottom));max-width:1200px;margin:0 auto;}
-  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:${C.card};border-top:1px solid ${C.border};display:flex;align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom);height:calc(62px + env(safe-area-inset-bottom));}
-  .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all 0.15s;min-height:44px;-webkit-tap-highlight-color:transparent;}
+  .page-content{padding:12px;overflow-x:hidden;box-sizing:border-box;width:100%;padding-bottom:calc(76px + env(safe-area-inset-bottom));}
+  .top-header{background:${C.card};border-bottom:1px solid ${C.border};padding:0 10px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:99;gap:6px;padding-top:env(safe-area-inset-top);overflow:hidden;}
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:${C.card};border-top:1px solid ${C.border};display:flex;align-items:stretch;z-index:100;padding-bottom:env(safe-area-inset-bottom);height:calc(60px + env(safe-area-inset-bottom));}
+  .bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px;cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
   .bottom-nav-item:active{background:${C.card2};}
-  .bottom-nav-icon{font-size:20px;line-height:1;}
-  .bottom-nav-label{font-size:10px;font-weight:600;letter-spacing:0.02em;}
-  .top-header{background:${C.card};border-bottom:1px solid ${C.border};padding:0 16px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:99;gap:8px;padding-top:env(safe-area-inset-top);}
-  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
-  .form-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .bottom-nav-icon{font-size:19px;line-height:1;}
+  .bottom-nav-label{font-size:10px;font-weight:600;letter-spacing:0.01em;}
+  .stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+  .card-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+  .form-row{display:flex;gap:10px;flex-wrap:wrap;}
   .form-row>*{flex:1;min-width:140px;}
-  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid ${C.border};}
-  .table-wrap table{min-width:500px;}
-  .mobile-card{background:${C.card};border:1px solid ${C.border};border-radius:14px;padding:16px;margin-bottom:12px;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid ${C.border};width:100%;max-width:100%;}
+  .table-wrap table{min-width:360px;width:100%;}
+  .mobile-card{background:${C.card};border:1px solid ${C.border};border-radius:14px;padding:14px;margin-bottom:10px;}
   .overflow-menu{position:relative;}
+  .tab-scroll{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none;}
+  .tab-scroll::-webkit-scrollbar{display:none;}
+  .top-nav-desktop{display:none;}
   @media(max-width:600px){
-    .stat-grid{grid-template-columns:repeat(2,1fr);}
-    .card-grid{grid-template-columns:1fr;}
     .hide-mobile{display:none !important;}
     .full-mobile{width:100% !important;}
-    .form-row>*{min-width:100%;flex:0 0 100%;}
+    .form-row>*{min-width:calc(50% - 5px);}
     h1{font-size:18px !important;}
     h2{font-size:16px !important;}
+    .page-content{padding:10px;}
+  }
+  @media(max-width:360px){
+    .form-row>*{min-width:100%;flex:0 0 100%;}
   }
   @media(min-width:768px){
     .bottom-nav{display:none;}
-    .page-content{padding-bottom:24px;}
+    .page-content{padding:20px;padding-bottom:24px;max-width:1200px;margin:0 auto;}
+    .stat-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .card-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
     .top-nav-desktop{display:flex !important;}
   }
-  .top-nav-desktop{display:none;}
   @media print{
     .no-print{display:none !important;}
     body{background:#fff;color:#000;}
@@ -682,7 +687,7 @@ function AccountsPage({accounts,setAccounts,transactions,setTransactions,expense
           <Btn color="amber"  onClick={()=>{setForm({type:"bank"});setModal("addAccount");}}>+ Add Account</Btn>
         </div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
         <div onClick={()=>setSelAccId("all")} style={{background:C.card,border:`2px solid ${selAccId==="all"?C.amber:C.border}`,borderRadius:12,padding:18,cursor:"pointer"}}>
           <div style={{fontSize:11,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:8}}>All Accounts</div>
           <div className="mono" style={{fontSize:22,fontWeight:800,color:totalBalance>=0?C.green:C.red}}>{fmtRs(totalBalance)}</div>
@@ -1052,7 +1057,7 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
                 {/* ── SUMMARY TAB ── */}
                 {labTab==="summary"&&<div>
                 {/* Stats */}
-                <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
                   <StatBox label="Current Monthly Salary" value={fmtRs(currentRate)} color={C.amber}/>
                   <StatBox label="Total Earned (lifetime)" value={fmtRs(earned.earned)} color={C.blue}/>
                   <StatBox label="This Month Earned" value={fmtRs(monthEarned)} color={C.teal}/>
@@ -1063,7 +1068,7 @@ function SalariesPage({labourers,setLabourers,accounts,transactions,setTransacti
 
                 {/* Info row */}
                 <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:18,marginBottom:20}}>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16}}>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:16}}>
                     <div><Label>Join Date</Label><div style={{fontWeight:700}}>{viewLabourer.joinDate||"—"}</div></div>
                     <div><Label>Phone</Label><div style={{color:C.muted}}>{viewLabourer.phone||"—"}</div></div>
                     <div><Label>Working Days</Label><div className="mono" style={{fontWeight:700,color:C.blue}}>{viewLabourer.joinDate?daysBetween(viewLabourer.joinDate,today())+" days":"—"}</div></div>
@@ -1831,7 +1836,7 @@ function SuppliersPage({suppliers,setSuppliers,vehicles}){
         </div>
 
         {/* KPI cards */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
           {[
             ["📦 Total Purchased",`${(st.totalWt/1000).toFixed(1)} tons`,C.amber],
             ["💰 Total Amount",fmtRs(st.totalAmt),C.orange],
@@ -1849,7 +1854,7 @@ function SuppliersPage({suppliers,setSuppliers,vehicles}){
         {st.rates.length>0&&(
           <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"16px 18px",marginBottom:16}}>
             <div style={{fontSize:12,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:14}}>📊 Rate Analytics</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10,marginBottom:16}}>
               {[["Avg Rate",`Rs.${fmt(st.avgRate)}/kg`,C.blue],["Min Rate",`Rs.${fmt(st.minRate)}/kg`,C.green],["Max Rate",`Rs.${fmt(st.maxRate)}/kg`,C.red]].map(([l,v,col])=>(
                 <div key={l} style={{background:C.card2,borderRadius:10,padding:"10px 12px",textAlign:"center"}}>
                   <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",marginBottom:4}}>{l}</div>
@@ -2166,7 +2171,7 @@ function BatchReceiptPage({vehicles,setVehicles,customers,accounts,labourers,add
           </Fld>
         )}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
         <StatBox label="Customers with Pending" value={allRows.length} color={C.amber}/>
         <StatBox label="Total Pending" value={fmtRs(allRows.reduce((s,r)=>s+r.pendingAmount,0))} color={C.red}/>
         <StatBox label="Amount Entered" value={fmtRs(totalMergedAmt)} color={mergedWithAmt.length>0?C.green:C.muted}/>
@@ -2356,7 +2361,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
       <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",marginBottom:12}}>
         <Btn color="ghost" small onClick={()=>window.print()}>🖨 Print</Btn>
       </div>
-      <div style={{display:"flex",gap:2,marginBottom:24,background:C.card,padding:4,borderRadius:10,border:`1px solid ${C.border}`,width:"fit-content"}} className="no-print">
+      <div style={{display:"flex",gap:2,marginBottom:16,background:C.card,padding:4,borderRadius:10,border:`1px solid ${C.border}`,overflowX:"auto",WebkitOverflowScrolling:"touch"}} className="no-print tab-scroll">
         {TABS.map(t=>(<button key={t} onClick={()=>setTab(t)} style={{padding:"8px 16px",borderRadius:20,background:tab===t?C.amber:"transparent",color:tab===t?"#000":C.muted,border:tab===t?"none":`1px solid ${C.border}`,fontWeight:tab===t?700:500,fontSize:12,whiteSpace:"nowrap",minHeight:36,flexShrink:0}}>{TAB_LABELS[t]}</button>))}
       </div>
 
@@ -2429,7 +2434,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
             </div>
 
             {/* KPI Cards */}
-            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
               <div style={{background:C.card,border:`1px solid ${C.green}44`,borderRadius:12,padding:"14px 16px"}}>
                 <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:6}}>🧾 Sales Today</div>
                 <div className="mono" style={{fontSize:18,fontWeight:800,color:C.green}}>{fmtRs(totalSaleAmt)}</div>
@@ -2552,7 +2557,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               {fromDate} → {toDate}
               {salesCustFilter&&custInfo&&<span style={{marginLeft:8,background:C.amberSoft,color:C.amber,padding:"2px 10px",borderRadius:10,fontSize:12,fontWeight:700}}>👤 {customers.find(c=>c.id===salesCustFilter)?.name}</span>}
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
               <StatBox label="Total Sales" value={salesInRange.length} color={C.amber}/>
               <StatBox label="Total Weight" value={fmtKg(salesWt)} color={C.blue}/>
               <StatBox label="Total Value" value={fmtRs(salesTotal)} color={C.green}/>
@@ -2600,7 +2605,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               {fromDate} → {toDate}
               {receiptsCustFilter&&<span style={{marginLeft:8,background:C.amberSoft,color:C.amber,padding:"2px 10px",borderRadius:10,fontSize:12,fontWeight:700}}>👤 {customers.find(c=>c.id===receiptsCustFilter)?.name}</span>}
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
               <StatBox label="Total Receipts" value={receiptsInRange.length} color={C.amber}/>
               <StatBox label="Total Collected" value={fmtRs(receiptsTotal)} color={C.green}/>
               <StatBox label="Unique Customers" value={new Set(receiptsInRange.map(r=>r.customerId)).size} color={C.blue}/>
@@ -2675,7 +2680,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
               </div>
 
               {/* Summary stat boxes */}
-              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
                 {custInfo?.openingBalance>0&&<StatBox label="Opening Balance" value={fmtRs(custOpeningBal)} color={C.orange}/>}
                 <StatBox label="Total Sales" value={fmtRs(custSalesTotal)} color={C.amber}/>
                 <StatBox label="Total Received" value={fmtRs(custReceiptsTotal)} color={C.green}/>
@@ -2820,7 +2825,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
                 <div><div style={{fontSize:20,fontWeight:800,marginBottom:4}}>🏭 {supInfo?.name}</div><div style={{color:C.muted,fontSize:13}}>{supInfo?.city||""} · {supInfo?.region||""}</div></div>
                 <div style={{textAlign:"right"}}><div style={{fontSize:12,color:C.muted,marginBottom:4}}>NET BALANCE</div><div className="mono" style={{fontSize:28,fontWeight:800,color:supBalance>0?C.red:C.green}}>{fmtRs(Math.abs(supBalance))}</div><div style={{fontSize:12,color:C.muted}}>{supBalance>0?"Payable":"Fully Paid"}</div></div>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
                 <StatBox label="Total Purchases" value={fmtRs(supPurchaseTotal)} color={C.amber}/>
                 <StatBox label="Total Paid" value={fmtRs(supPaidTotal)} color={C.green}/>
                 <StatBox label="Balance Due" value={fmtRs(supBalance)} color={supBalance>0?C.red:C.green}/>
@@ -2862,7 +2867,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         const totalDue=rows.reduce((s,r)=>s+r.due,0);
         const daysDiff=d=>Math.round((new Date()-new Date(d))/(864e5));
         return(<div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
             <StatBox label="Customers with Balance" value={rows.length} color={C.amber}/>
             <StatBox label="Total Receivable" value={fmtRs(totalDue)} color={C.red}/>
           </div>
@@ -2912,7 +2917,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         const totCost=rows.reduce((s,r)=>s+r.cost,0);
         const totPnl=rows.reduce((s,r)=>s+r.pnl,0);
         return(<div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
             <StatBox label="Total Revenue" value={fmtRs(totRev)} color={C.green}/>
             <StatBox label="Total Cost" value={fmtRs(totCost)} color={C.red}/>
             <StatBox label="Net Profit/Loss" value={fmtRs(Math.abs(totPnl))} color={totPnl>=0?C.green:C.red} sub={totPnl>=0?"Profit":"Loss"}/>
@@ -2957,7 +2962,7 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         }));
         const BCOLORS={"0–15 days":C.green,"16–30 days":C.amber,"31–60 days":C.orange,"60+ days":C.red};
         return(<div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10}}>
             {Object.entries(buckets).map(([bucket,items])=>(
               <div key={bucket} style={{background:C.card,border:`2px solid ${BCOLORS[bucket]}44`,borderRadius:12,padding:16}}>
                 <div style={{fontWeight:700,color:BCOLORS[bucket],marginBottom:4}}>{bucket}</div>
@@ -3219,7 +3224,7 @@ function Dashboard({vehicles,transactions,accounts,customers,onOpen,onNew}){
                     <div style={{fontSize:12,color:C.muted}}>{v.date} {v.time?`· ${v.time}`:""} · {v.driverName||"No driver"}</div></div>
                   <Tag color={v.status==="active"?C.green:C.muted}>{v.status}</Tag>
                 </div>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:12,width:"100%"}}>
                   <StatBox label="Received" value={fmtKg(c.received)} color={C.blue}/>
                   <StatBox label="Remaining" value={fmtKg(c.remaining)} color={c.remaining>0?C.amber:C.muted}/>
                   <StatBox label="Sale Value" value={fmtRs(c.totalSaleValue)} color={C.green}/>
@@ -3497,7 +3502,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
           </div>
         )}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
         <StatBox label="Purchased" value={fmtKg(c.purchased)} color={C.blue}/>
         <StatBox label="Transit Loss" value={fmtKg(c.transitLoss)} color={C.red}/>
         <StatBox label="Received" value={fmtKg(c.received)} color={C.amber}/>
@@ -3557,7 +3562,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                     {vehicle.status==="active"&&<button onClick={()=>{if(window.confirm(`Delete purchase from ${p.supplierName} (${fmtKg(p.weight)})? This cannot be undone.`))mut(v=>({...v,purchases:v.purchases.filter(x=>x.id!==p.id)}));}} style={{background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:700,cursor:"pointer",marginTop:2}}>🗑 Delete</button>}
                   </div>
                 </div>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:12}}>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10,marginBottom:12}}>
                   <StatBox label="Total Cost" value={fmtRs(n(p.weight)*n(p.rate))} color={C.amber}/>
                   <StatBox label="Paid" value={fmtRs(paid)} color={C.green}/>
                   <StatBox label="Balance" value={fmtRs(bal)} color={bal>0?C.red:C.green}/>
@@ -3603,7 +3608,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
                     {vehicle.status==="active"&&<button onClick={()=>{if(window.confirm(`Delete sale ${sale.receiptNo}? This cannot be undone.`))mut(v=>({...v,sales:v.sales.filter(s=>s.id!==sale.id)}));}} style={{background:C.redSoft,color:C.red,border:`1px solid ${C.red}33`,borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:700,cursor:"pointer",marginTop:2}}>🗑 Delete</button>}
                   </div>
                 </div>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:12}}>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10,marginBottom:12}}>
                   <StatBox label="Sale Amount" value={fmtRs(sale.totalAmount)} color={C.amber}/>
                   <StatBox label="Collected" value={fmtRs(collected)} color={C.green}/>
                   <StatBox label="Balance" value={fmtRs(saleBalance)} color={saleBalance>0?C.red:C.green}/>
@@ -3653,7 +3658,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
 
             {/* Summary cards */}
             {(totalOut>0||totalIn>0)&&(
-              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:16}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10,marginBottom:16}}>
                 {[
                   ["📤 Sent Out",fmtKg(totalOut),C.orange,outTransfers.length+" transfers"],
                   ["📥 Received In",fmtKg(totalIn),C.blue,inTransfers.length+" transfers"],
@@ -3833,7 +3838,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
         return(
           <div>
             {/* ── TOP KPI CARDS ── */}
-            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
               <div style={{background:C.card,border:`1px solid ${c.pnl>=0?C.green:C.red}44`,borderRadius:12,padding:"14px 16px",gridColumn:"1/-1"}}>
                 <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:6}}>{c.pnl>=0?"📈 Net Profit":"📉 Net Loss"}</div>
                 <div className="mono" style={{fontSize:28,fontWeight:800,color:c.pnl>=0?C.green:C.red}}>{c.pnl>=0?"+ ":"− "}{fmtRs(Math.abs(c.pnl))}</div>
@@ -4392,7 +4397,7 @@ function PartnersPage({partners,setPartners,distributions,setDistributions,vehic
         </div>
 
         {/* KPIs */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
           {[
             ["📊 Share",`${viewPartner.share}%`,C.blue,"of total profit"],
             ["💰 Earned (Est.)",fmtRs(viewPartner.earnedShare),C.teal,"from net P&L"],
@@ -4503,7 +4508,7 @@ function PartnersPage({partners,setPartners,distributions,setDistributions,vehic
       {/* Business P&L overview */}
       <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:18,marginBottom:16}}>
         <div style={{fontSize:11,fontWeight:700,color:C.muted,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:12}}>📊 Business Overview</div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10}}>
           {[
             ["Net Profit (All Time)",fmtRs(Math.max(0,totalNetProfit)),totalNetProfit>=0?C.green:C.red],
             ["Total Distributed",fmtRs(totalDistributed),C.teal],
@@ -4570,7 +4575,7 @@ function PartnersPage({partners,setPartners,distributions,setDistributions,vehic
                       <div style={{fontSize:10,color:C.muted}}>estimated share</div>
                     </div>
                   </div>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:12}}>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8,marginBottom:12}}>
                     {[["Distributed",fmtRs(p.totalDist),C.green],["Pending",fmtRs(p.pending),p.pending>0?C.amber:C.green],["Payments",p.myDists.length,C.muted]].map(([l,v,c])=>(
                       <div key={l} style={{background:C.card2,borderRadius:8,padding:"7px 8px",textAlign:"center"}}>
                         <div style={{fontSize:9,color:C.muted,fontWeight:700,textTransform:"uppercase",marginBottom:2}}>{l}</div>
@@ -4764,7 +4769,7 @@ Shukriya 🙏`
       </div>
 
       {/* Bucket summary cards */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:18}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:18}}>
         {BUCKETS.map(b=>{
           const tot=bucketTotals[b.key];
           const pct=totalReceivables>0?Math.round(tot.amount/totalReceivables*100):0;
@@ -5053,7 +5058,7 @@ function CashFlowPage({accounts,transactions,vehicles}){
           </div>
 
           {/* 4 summary cards */}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,marginBottom:16}}>
             {[
               ["💚 Money In",fmtRs(totalDayIn),C.green,`${inRows.length} transactions`],
               ["🔴 Money Out",fmtRs(totalDayOut),C.red,`${outRows.length} transactions`],
@@ -5155,7 +5160,7 @@ function CashFlowPage({accounts,transactions,vehicles}){
           </div>
 
           {/* Monthly totals */}
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:18}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10,marginBottom:18}}>
             {[["💚 Total In",fmtRs(monthIn),C.green,`${activeDays.length} active days`],["🔴 Total Out",fmtRs(monthOut),C.red,""],["📊 Net",fmtRs(Math.abs(monthNet)),monthNet>=0?C.teal:C.red,monthNet>=0?"Surplus":"Deficit"]].map(([l,v,col,sub])=>(
               <div key={l} style={{background:C.card,border:`1px solid ${col}33`,borderRadius:12,padding:"12px 14px",textAlign:"center"}}>
                 <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",marginBottom:5}}>{l}</div>
@@ -5412,7 +5417,7 @@ function DriversPage({drivers,setDrivers,vehicles,setVehicles,transactions}){
 
         {/* Info card */}
         <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:14,padding:20,marginBottom:14}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:14}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:14}}>
             {[["📱 Phone",viewDriver.phone||"—"],["🪪 CNIC",viewDriver.cnic||"—"],["🚗 License",viewDriver.license||"—"],["🏙 Home City",viewDriver.city||"—"],["📅 Joined",viewDriver.createdAt||"—"],["📋 Status",<Tag color={statusColor}>{viewDriver.status||"Active"}</Tag>]].map(([l,v])=>(
               <div key={l}>
                 <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:3}}>{l}</div>
@@ -5424,7 +5429,7 @@ function DriversPage({drivers,setDrivers,vehicles,setVehicles,transactions}){
         </div>
 
         {/* KPI cards */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:18}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10,marginBottom:18}}>
           {[["🚛 Total Trips",trips.length,C.amber],["✅ Completed",trips.filter(v=>v.status==="closed").length,C.green],["💰 Salary Paid",fmtRs(earnings),C.teal]].map(([l,v,col])=>(
             <div key={l} style={{background:C.card,border:`1px solid ${col}33`,borderRadius:12,padding:"12px 14px",textAlign:"center"}}>
               <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",marginBottom:5}}>{l}</div>
@@ -5500,7 +5505,7 @@ function DriversPage({drivers,setDrivers,vehicles,setVehicles,transactions}){
 
       {/* Summary row */}
       {(drivers||[]).length>0&&(
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:16}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:10,marginBottom:16}}>
           {[
             ["🚗 Total Drivers",(drivers||[]).length,C.amber],
             ["✅ Active",(drivers||[]).filter(d=>(d.status||"Active")==="Active").length,C.green],
@@ -5539,7 +5544,7 @@ function DriversPage({drivers,setDrivers,vehicles,setVehicles,transactions}){
                       {activeT.length>0&&<Tag color={C.green}>🚛 {activeT.length} active</Tag>}
                     </div>
                   </div>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:8}}>
                     {[["Total Trips",trips.length,C.amber],["Completed",trips.filter(v=>v.status==="closed").length,C.green],["Salary Paid",fmtRs(earnings),C.teal]].map(([l,v,col])=>(
                       <div key={l} style={{background:C.card2,borderRadius:8,padding:"7px 10px",textAlign:"center"}}>
                         <div style={{fontSize:9,color:C.muted,fontWeight:700,textTransform:"uppercase",marginBottom:2}}>{l}</div>
@@ -6073,7 +6078,7 @@ function App({ uid, userEmail }) {
           {openVehicle ? `🚛 ${openVehicle.vehicleNo}` : pageTitles[page] || "ChickenFlow"}
         </div>
         {/* Balance shown in header */}
-        {!openVehicle&&<div style={{fontSize:12,color:totalBal>=0?C.green:C.red,fontWeight:700,marginRight:4}} className="mono">
+        {!openVehicle&&<div style={{fontSize:12,color:totalBal>=0?C.green:C.red,fontWeight:700,marginRight:4,maxWidth:80,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}} className="mono">
           {fmtRs(totalBal)}
         </div>}
         {/* Global search button */}
@@ -6317,7 +6322,7 @@ function App({ uid, userEmail }) {
       {showMore && (
         <div style={{position:"fixed",inset:0,zIndex:200}} onClick={()=>setShowMore(false)}>
           <div style={{position:"absolute",bottom:"calc(62px + env(safe-area-inset-bottom))",left:0,right:0,
-            background:C.card,borderTop:`1px solid ${C.border}`,borderRadius:"16px 16px 0 0",padding:16}}
+            background:C.card,borderTop:`1px solid ${C.border}`,borderRadius:"16px 16px 0 0",padding:16,maxHeight:"75vh",overflowY:"auto"}}
             onClick={e=>e.stopPropagation()}>
             <div style={{width:36,height:4,background:C.border,borderRadius:2,margin:"0 auto 16px"}}/>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
