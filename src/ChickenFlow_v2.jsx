@@ -6534,7 +6534,7 @@ function App({ uid, userEmail }) {
         </div>
       )}
 
-            </PullToRefresh>
+            
       {/* ── FAB (Floating Action Button) ── */}
       {!showGlobalSearch&&!openVehicle&&(()=>{
         const fabMap={
@@ -6592,7 +6592,6 @@ function App({ uid, userEmail }) {
       )}
 
       {/* ── PAGE CONTENT ── */}
-      <PullToRefresh onRefresh={async()=>{ await new Promise(r=>setTimeout(r,700)); }}>
       <div className="page-content">
         {page==="projects"&&!openVehicle&&<Dashboard vehicles={vehicles} transactions={transactions} accounts={accounts} customers={customers} onOpen={id=>setOpenId(id)} onNew={()=>setShowNew(true)}/>}
         {page==="projects"&&openVehicle&&(
