@@ -1539,22 +1539,34 @@ function CustomersPage({customers,setCustomers}){
   };
 
   const downloadTemplate=()=>{
-    const csv="Name,Phone,City,Address,Rate,Opening Balance\nAli Chicken Shop,0300-1234567,Khuzdar,Main Bazar,420,15000\nSana Poultry,0333-9876543,Quetta,Liaquat Road,415,0";
-    const blob=new Blob([csv],{type:"text/csv"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;a.download="customers_template.csv";
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+    const csv='Name,Phone,City,Address,Rate,Opening Balance\nAli Chicken Shop,0300-1234567,Khuzdar,Main Bazar,420,15000\nSana Poultry,0333-9876543,Quetta,Liaquat Road,415,0';
+    try{
+      const b64=btoa(unescape(encodeURIComponent(csv)));
+      const a=document.createElement('a');
+      a.href='data:text/csv;base64,'+b64;
+      a.download='customers_template.csv';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    }catch(e){
+      // Fallback: open as text in new tab
+      const w=window.open('','_blank');
+      if(w){w.document.write('<pre>'+csv+'</pre>');w.document.title='customers_template.csv';}
+      else alert('Copy this template data:\n\n'+csv);
+    }
   };
   const downloadBalTemplate=()=>{
-    const csv="Name,Opening Balance\nAli Chicken Shop,15000\nSana Poultry,8500";
-    const blob=new Blob([csv],{type:"text/csv"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;a.download="opening_balances_template.csv";
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+    const csv='Name,Opening Balance\nAli Chicken Shop,15000\nSana Poultry,8500';
+    try{
+      const b64=btoa(unescape(encodeURIComponent(csv)));
+      const a=document.createElement('a');
+      a.href='data:text/csv;base64,'+b64;
+      a.download='opening_balances_template.csv';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    }catch(e){
+      // Fallback: open as text in new tab
+      const w=window.open('','_blank');
+      if(w){w.document.write('<pre>'+csv+'</pre>');w.document.title='opening_balances_template.csv';}
+      else alert('Copy this template data:\n\n'+csv);
+    }
   };
 
   const rateFiltered=useMemo(()=>customers.filter(c=>c.name.toLowerCase().includes(rateSearch.toLowerCase())||(c.city||"").toLowerCase().includes(rateSearch.toLowerCase())),[customers,rateSearch]);
@@ -3342,13 +3354,19 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
     alert(`\u2705 ${newSales.length} sales imported successfully!`);
   };
   const downloadSalesTemplate=()=>{
-    const csv="CustomerName,Date,Weight,Rate,Notes\nAli Chicken Shop,2025-01-15,500,420,Sample sale";
-    const blob=new Blob([csv],{type:"text/csv"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;a.download="sales_import_template.csv";
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+    const csv='CustomerName,Date,Weight,Rate,Notes\nAli Chicken Shop,2025-01-15,500,420,Sample sale';
+    try{
+      const b64=btoa(unescape(encodeURIComponent(csv)));
+      const a=document.createElement('a');
+      a.href='data:text/csv;base64,'+b64;
+      a.download='sales_import_template.csv';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    }catch(e){
+      // Fallback: open as text in new tab
+      const w=window.open('','_blank');
+      if(w){w.document.write('<pre>'+csv+'</pre>');w.document.title='sales_import_template.csv';}
+      else alert('Copy this template data:\n\n'+csv);
+    }
   };
 
   // ── IMPORT RECEIPTS ──
@@ -3402,13 +3420,19 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
     alert(`\u2705 ${valid.length} receipts imported successfully!`);
   };
   const downloadReceiptsTemplate=()=>{
-    const csv="ReceiptNo,CustomerName,Date,Amount,Method,Note\nRCP-ABC123,Ali Chicken Shop,2025-01-20,50000,Cash,Partial payment";
-    const blob=new Blob([csv],{type:"text/csv"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;a.download="receipts_import_template.csv";
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+    const csv='ReceiptNo,CustomerName,Date,Amount,Method,Note\nRCP-ABC123,Ali Chicken Shop,2025-01-20,50000,Cash,Partial payment';
+    try{
+      const b64=btoa(unescape(encodeURIComponent(csv)));
+      const a=document.createElement('a');
+      a.href='data:text/csv;base64,'+b64;
+      a.download='receipts_import_template.csv';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    }catch(e){
+      // Fallback: open as text in new tab
+      const w=window.open('','_blank');
+      if(w){w.document.write('<pre>'+csv+'</pre>');w.document.title='receipts_import_template.csv';}
+      else alert('Copy this template data:\n\n'+csv);
+    }
   };
 
   const addPurchase=()=>{
