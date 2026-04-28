@@ -3971,7 +3971,7 @@ Current balance after this sale: ${fmtRs(newTotal)}`);
               <div style={{background:C.card,border:`1px solid ${c.pnl>=0?C.green:C.red}44`,borderRadius:12,padding:"14px 16px",gridColumn:"1/-1"}}>
                 <div style={{fontSize:10,color:C.muted,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:6}}>{c.pnl>=0?"📈 Net Profit":"📉 Net Loss"}</div>
                 <div className="mono" style={{fontSize:28,fontWeight:800,color:c.pnl>=0?C.green:C.red}}>{c.pnl>=0?"+ ":"− "}{fmtRs(Math.abs(c.pnl))}</div>
-                <div style={{fontSize:12,color:C.muted,marginTop:4}}>{margin>=0?"Margin: ":"":""}<span style={{color:c.pnl>=0?C.green:C.red,fontWeight:700}}>{margin.toFixed(1)}%</span></div>
+                <div style={{fontSize:12,color:C.muted,marginTop:4}}>Margin: <span style={{color:c.pnl>=0?C.green:C.red,fontWeight:700}}>{margin.toFixed(1)}%</span></div>
               </div>
               {[["💰 Revenue",fmtRs(c.totalSaleValue),C.green],["💸 Total Cost",fmtRs(c.totalCost),C.red],["📦 Rev/kg",`Rs.${fmt(revPerKg)}`,C.amber],["🏷 Cost/kg",`Rs.${fmt(costPerKg)}`,C.orange]].map(([l,v,col])=>(
                 <div key={l} style={{background:C.card,border:`1px solid ${col}33`,borderRadius:12,padding:"12px 14px"}}>
