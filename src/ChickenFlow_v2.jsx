@@ -2975,8 +2975,8 @@ function ReportsPage({vehicles,customers,suppliers,transactions}){
         </div>);
       })()}
 
-    </div>
     {invoiceSale&&<InvoiceModal sale={invoiceSale} vehicleNo={vehicle.vehicleNo} onClose={()=>setInvoiceSale(null)}/>}
+    </div>
   );
 }
 
