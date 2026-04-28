@@ -5832,6 +5832,56 @@ export default function AppRoot() {
   return <ErrorBoundary><App uid={user.uid} userEmail={user.email} /></ErrorBoundary>;
 }
 
+
+// ── PWA Install Prompt ──
+function usePWAInstall() {
+  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+  const [showBanner, setShowBanner] = React.useState(false);
+  React.useEffect(() => {
+    const handler = (e) => { e.preventDefault(); setDeferredPrompt(e); setShowBanner(true); };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+  const install = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    setDeferredPrompt(null); setShowBanner(false);
+  };
+  const dismiss = () => setShowBanner(false);
+  return { showBanner, install, dismiss };
+}
+
+function PWAInstallBanner() {
+  const { showBanner, install, dismiss } = usePWAInstall();
+  if (!showBanner) return null;
+  return (
+    <div style={{
+      position:'fixed', bottom:70, left:10, right:10, zIndex:9999,
+      background:'linear-gradient(135deg,#f59e0b,#d97706)',
+      borderRadius:14, padding:'12px 16px',
+      boxShadow:'0 8px 32px rgba(0,0,0,0.4)',
+      display:'flex', alignItems:'center', gap:12,
+      animation:'slideUp 0.3s ease'
+    }}>
+      <span style={{fontSize:28}}>🐔</span>
+      <div style={{flex:1}}>
+        <div style={{fontWeight:800, fontSize:14, color:'#1a1a1a'}}>Install ChickenFlow</div>
+        <div style={{fontSize:12, color:'#3a2a00'}}>Add to home screen for quick access</div>
+      </div>
+      <button onClick={install} style={{
+        background:'#1a1a1a', color:'#f59e0b', border:'none',
+        borderRadius:8, padding:'8px 14px', fontWeight:700,
+        fontSize:13, cursor:'pointer', whiteSpace:'nowrap'
+      }}>Install</button>
+      <button onClick={dismiss} style={{
+        background:'transparent', color:'#3a2a00', border:'none',
+        fontSize:20, cursor:'pointer', padding:'0 4px', lineHeight:1
+      }}>✕</button>
+    </div>
+  );
+}
+
 function App({ uid, userEmail }) {
   const [vehicles,    setVehicles,    v_loaded]  = useFirestoreState(uid, "cf_vehicles",    []);
   const [customers,   setCustomers,   c_loaded]  = useFirestoreState(uid, "cf_customers",   []);
@@ -6117,6 +6167,8 @@ function App({ uid, userEmail }) {
   return(
     <>
       <style>{css}</style>
+
+      <PWAInstallBanner/>
 
       {/* ── TOP HEADER ── */}
       <div className="top-header no-print">
