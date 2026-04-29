@@ -25,6 +25,14 @@ jobs:
       - name: Build web
         run: npm run build
 
+      - name: Add Android platform (if not exists)
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          else
+            echo "Android folder already exists, skipping add"
+          fi
+
       - name: Sync Capacitor
         run: npx cap sync android
 
