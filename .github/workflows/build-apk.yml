@@ -19,8 +19,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Capacitor CLI
-        run: npm install -g @capacitor/cli
+      - name: Install Capacitor CLI & Android
+        run: |
+          npm install -g @capacitor/cli
+          npm install @capacitor/android
 
       - name: Build web
         run: npm run build
