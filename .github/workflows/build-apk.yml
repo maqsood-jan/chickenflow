@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Setup Java 17
@@ -31,12 +31,12 @@ jobs:
       - name: Build web app
         run: npm run build
 
-      - name: Add Android platform (only if android/ does not exist)
+      - name: Add Android platform
         run: |
           if [ ! -d "android" ]; then
             npx cap add android
           else
-            echo "android/ already exists, skipping cap add"
+            echo "android/ already exists, skipping"
           fi
 
       - name: Sync Capacitor
