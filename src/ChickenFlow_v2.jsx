@@ -3330,12 +3330,26 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
       const rows=XLSX.utils.sheet_to_json(ws,{defval:""});
       const parsed=rows.map((r,i)=>{
         const custName=(r["CustomerName"]||r["Customer"]||r["customer_name"]||r["customer"]||"").toString().trim();
-        const date=(r["Date"]||r["date"]||today()).toString().trim()||today();
+        const rawDate=(r["Date"]||r["date"]||r["DATE"]||"").toString().trim();
+        // Normalize date to YYYY-MM-DD
+        let date=today();
+        if(rawDate){
+          // Handle Excel serial numbers (e.g. 45678)
+          if(/^\d{5}$/.test(rawDate)){
+            const d=new Date((parseInt(rawDate)-25569)*86400000);
+            date=d.toISOString().slice(0,10);
+          } else if(/^\d{1,2}[\/-]\d{1,2}[\/-]\d{2,4}$/.test(rawDate)){
+            // DD/MM/YYYY or MM/DD/YYYY
+            const parts=rawDate.split(/[\/-]/);
+            if(parts[2]&&parts[2].length===4) date=`${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+            else date=rawDate;
+          } else { date=rawDate||today(); }
+        }
         const weight=n(r["Weight"]||r["weight"]||r["Kg"]||r["kg"]||0);
         const rateVal=n(r["Rate"]||r["rate"]||r["Price"]||r["price"]||0);
         const notes=(r["Notes"]||r["notes"]||r["Note"]||r["note"]||"").toString().trim();
         const cu=customers.find(cc=>cc.name.toLowerCase()===custName.toLowerCase());
-        return{_row:i+2,custName,date,weight,rate:rateVal||(cu?.defaultRate||0),notes,customerId:cu?.id||null,customerFound:!!cu};
+        return{_row:i+2,custName,customerName:custName,name:custName,date,weight,rate:rateVal||(cu?.defaultRate||0),notes,customerId:cu?.id||null,customerFound:!!cu};
       }).filter(r=>r.custName||r.weight>0);
       if(!parsed.length) return setImportSalesError("No valid rows found. Check column headers: CustomerName, Date, Weight, Rate");
       setImportSalesPreview(parsed);
@@ -3344,10 +3358,12 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
   };
   const confirmImportSales=()=>{
     const valid=importSalesPreview.filter(r=>r.customerId&&r.weight>0&&r.rate>0);
+    const unmatched=importSalesPreview.filter(r=>!r.customerId&&(r.weight>0||r.rate>0));
+    if(unmatched.length>0&&!window.confirm(`⚠️ ${unmatched.length} row(s) have unrecognized customer names and will be SKIPPED.\n\nUnmatched: ${unmatched.map(r=>r.custName).join(", ")}\n\nContinue importing ${valid.length} valid rows?`)) return;
     if(!valid.length) return alert("No valid rows to import (check customer names match exactly)");
     const totalWt=valid.reduce((s,r)=>s+n(r.weight),0);
     if(totalWt>c.remaining) return alert(`Total import weight (${fmtKg(totalWt)}) exceeds remaining stock (${fmtKg(c.remaining)})`);
-    const newSales=valid.map(r=>({id:genId(),customerId:r.customerId,customerName:r.custName,date:r.date,weight:n(r.weight),rate:n(r.rate),totalAmount:n(r.weight)*n(r.rate),receiptNo:`RCP-${genId()}`,notes:r.notes||"Imported",receipts:[]}));
+    const newSales=valid.map(r=>({id:genId(),customerId:r.customerId,customerName:r.customerName||r.custName||r.name||"",date:r.date||new Date().toISOString().slice(0,10),weight:n(r.weight),rate:n(r.rate),totalAmount:n(r.weight)*n(r.rate),receiptNo:`INV-${genId().slice(0,6).toUpperCase()}`,notes:r.notes||"Imported via Excel",driver:"",receipts:[]}));
     mut(v=>({...v,sales:[...v.sales,...newSales]}));
     setImportSalesPreview([]);setImportSalesError("");
     closeModal();
@@ -3389,7 +3405,12 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
         let matchedSale=null;
         if(receiptNo) matchedSale=vehicle.sales.find(s=>s.receiptNo===receiptNo);
         if(!matchedSale&&custName){
-          const custSales=vehicle.sales.filter(s=>s.customerName.toLowerCase()===custName.toLowerCase());
+          // Find customer by name (case-insensitive, trimmed)
+          const cu=customers.find(cc=>(cc.name||"").toLowerCase().trim()===(custName||"").toLowerCase().trim());
+          const custSales=vehicle.sales.filter(s=>
+            s.customerName?.toLowerCase()===custName.toLowerCase() ||
+            (cu && s.customerId===cu.id)
+          );
           matchedSale=custSales.reduce((best,s)=>{
             const bal=s.totalAmount-(s.receipts||[]).reduce((a,rr)=>a+n(rr.amount),0);
             const bestBal=best?best.totalAmount-(best.receipts||[]).reduce((a,rr)=>a+n(rr.amount),0):0;
@@ -3411,7 +3432,7 @@ function VehicleDetail({vehicle,setVehicles,suppliers,customers,accounts,laboure
     const valid=importReceiptsPreview.filter(r=>r.matchedSale&&r.amount>0);
     if(!valid.length) return alert("No valid rows to import");
     valid.forEach(r=>{
-      const receipt={id:genId(),amount:n(r.amount),date:r.date,method:r.method||"Cash",accountId:importReceiptsAccountId,accountName:acct?.name||"",note:r.note||"Imported"};
+      const receipt={id:genId(),amount:n(r.amount),date:r.date,method:r.method||"Cash",accountId:importReceiptsAccountId,accountName:acct?.name||"",note:r.note||"Imported via Excel",customerId:r.matchedSale?.customerId||"",customerName:r.matchedSale?.customerName||r.custName||""};
       mut(v=>({...v,sales:v.sales.map(s=>s.id===r.matchedSale.id?{...s,receipts:[...(s.receipts||[]),receipt]}:s)}));
       addTxn({date:r.date,type:"receipt",amount:n(r.amount),debitAccountId:importReceiptsAccountId,creditAccountId:null,description:`Receipt \u2014 ${r.matchedSale.customerName} (${r.matchedSale.receiptNo} \u00b7 ${vehicle.vehicleNo})`,note:r.note||"Imported"});
     });
